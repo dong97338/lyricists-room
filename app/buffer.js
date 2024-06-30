@@ -7,7 +7,7 @@ export default function Home() {
   const router = useRouter();
 
   const handleStart = () => {
-    router.push('graph');
+    router.push('page2.js');
   };
 
   return (
