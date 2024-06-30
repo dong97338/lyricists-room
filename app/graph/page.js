@@ -4,11 +4,10 @@ import React, {useEffect, useState, useRef} from 'react'
 import {useSearchParams} from 'next/navigation'
 import * as d3 from 'd3'
 
-const initialGraph = {nodes: [{id: 1, name: 'A', fx: 480, fy: 300}], links: []}
 
 export default function Mindmap() {
   const searchParams = useSearchParams()
-  const topic = searchParams.get('topic') || 'No topic'
+  const initialGraph = {nodes: [{id: 1, name: searchParams.get('topic') || 'No topic', fx: 480, fy: 300}], links: []}
   const [graph, setGraph] = useState(initialGraph)
   const [sentence, setSentence] = useState('')
   const svgRef = useRef(null)
