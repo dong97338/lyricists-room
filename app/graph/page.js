@@ -1,11 +1,10 @@
 'use client'
 
-import React, {useEffect, useState, useRef} from 'react'
+import React, {useEffect, useState, useRef, Suspense} from 'react'
 import {useSearchParams} from 'next/navigation'
 import * as d3 from 'd3'
 
-
-export default function Mindmap() {
+function Graph() {
   const searchParams = useSearchParams()
   const initialGraph = {nodes: [{id: 1, name: searchParams.get('topic') || 'No topic', fx: 480, fy: 300}], links: []}
   const [graph, setGraph] = useState(initialGraph)
@@ -161,3 +160,9 @@ export default function Mindmap() {
     </div>
   )
 }
+
+export default () => (
+  <Suspense fallback={<div>Loading...</div>}>
+    <Graph />
+  </Suspense>
+)
