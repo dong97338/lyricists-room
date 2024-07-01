@@ -11,7 +11,7 @@ function Graph() {
 
   const handleNodeClick = node => {
     const angleStep = (2 * Math.PI) / 3
-    const newNodes = Array.from({length: 3}, (_, i) => ({
+    const newNodes = [...Array(3)].map((_, i) => ({
       id: graph.nodes.length + i + 1,
       name: `${node.name}${i + 1}`,
       x: node.x + 50 * Math.cos(i * angleStep),
