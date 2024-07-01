@@ -1,5 +1,4 @@
 'use client'
-
 import React, {useEffect, useState, useRef, Suspense} from 'react'
 import {useSearchParams} from 'next/navigation'
 import * as d3 from 'd3'
@@ -25,10 +24,8 @@ function Graph() {
   useEffect(() => {
     const svg = d3.select(svgRef.current)
     svg.selectAll('*').remove()
-
     const linkGroup = svg.append('g').attr('class', 'links')
     const nodeGroup = svg.append('g').attr('class', 'nodes')
-
     const simulation = d3
       .forceSimulation(graph.nodes)
       .force(
@@ -52,7 +49,6 @@ function Graph() {
           .attr('y2', d => d.target.y)
           .attr('stroke', '#999')
           .attr('stroke-width', 2)
-
         nodeGroup
           .selectAll('g')
           .data(graph.nodes)
@@ -60,28 +56,27 @@ function Graph() {
             const nodeEnter = enter
               .append('g')
               .attr('class', 'node')
-              .on('click', (event, d) => handleNodeClick(d))
+              .on('click', (e, d) => handleNodeClick(d))
               .call(
                 d3
                   .drag()
-                  .on('start', (event, d) => {
-                    if (!event.active) simulation.alphaTarget(0.3).restart()
+                  .on('start', (e, d) => {
+                    if (!e.active) simulation.alphaTarget(0.3).restart()
                     d.fx = d.x
                     d.fy = d.y
                   })
-                  .on('drag', (event, d) => {
-                    d.fx = event.x
-                    d.fy = event.y
+                  .on('drag', (e, d) => {
+                    d.fx = e.x
+                    d.fy = e.y
                   })
-                  .on('end', (event, d) => {
-                    if (!event.active) simulation.alphaTarget(0)
+                  .on('end', (e, d) => {
+                    if (!e.active) simulation.alphaTarget(0)
                     if (d.id !== 1) {
                       d.fx = null
                       d.fy = null
                     }
                   })
               )
-
             nodeEnter.append('circle').attr('r', 20).attr('fill', '#d9d9d9')
             nodeEnter
               .append('text')
@@ -93,7 +88,6 @@ function Graph() {
           })
           .attr('transform', d => `translate(${d.x},${d.y})`)
       })
-
     simulation.nodes(graph.nodes)
     simulation.force('link').links(graph.links)
     simulation.alpha(1).restart()
