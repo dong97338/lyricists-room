@@ -2,6 +2,21 @@
 import React, {useEffect, useState, useRef, Suspense} from 'react'
 import {useSearchParams} from 'next/navigation'
 import * as d3 from 'd3'
+import OpenAIApi from 'openai'
+import dotenv from 'dotenv'
+
+dotenv.config()
+const openai = new OpenAIApi({apiKey: process.env.OPENAI_API_KEY})
+
+const generateResponse = async (nodeName) => {
+  const prompt = `Given the name "${nodeName}", generate three child node names separated by commas. ex) name1, name2, name3`
+  const response = await openai.chat.completions.create({
+    model: 'gpt-3.5-turbo-0125',
+    messages: [{role: 'user', content: prompt}],
+    temperature: 0
+  })
+  return response.choices[0].message.content.trim().split(',').map(name => name.trim())
+}
 
 function Graph() {
   const searchParams = useSearchParams()
@@ -9,11 +24,12 @@ function Graph() {
   const [sentence, setSentence] = useState('')
   const svgRef = useRef(null)
 
-  const handleNodeClick = node => {
+  const handleNodeClick = async node => {
     const angleStep = (2 * Math.PI) / 3
-    const newNodes = [...Array(3)].map((_, i) => ({
+    const childNodeNames = await generateResponse(node.name)
+    const newNodes = childNodeNames.map((childName, i) => ({
       id: graph.nodes.length + i + 1,
-      name: `${node.name}${i + 1}`,
+      name: childName,
       x: node.x + 50 * Math.cos(i * angleStep),
       y: node.y + 50 * Math.sin(i * angleStep)
     }))
