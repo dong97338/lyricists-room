@@ -20,11 +20,9 @@ function Graph() {
   }
 
   const handleNodeClick = async node => {
-    const angle = (2 * Math.PI) / 3
     const childNodeNames = await generateResponse(node.name)
-    const newNodes = childNodeNames.map((name, i) => ({id: graph.nodes.length + i + 1, name, x: node.x + 50 * Math.cos(i * angle), y: node.y + 50 * Math.sin(i * angle)}))
-    const newLinks = newNodes.map(newNode => ({source: node.id, target: newNode.id}))
-    setGraph(prevGraph => ({nodes: [...prevGraph.nodes, ...newNodes], links: [...prevGraph.links, ...newLinks]}))
+    const newNodes = childNodeNames.map((name, i) => ({id: graph.nodes.length + i + 1, name, x: node.x + 50 * Math.cos(2 * i), y: node.y + 50 * Math.sin(2 * i)}))
+    setGraph(prevGraph => ({nodes: [...prevGraph.nodes, ...newNodes], links: [...prevGraph.links, ...newNodes.map(newNode => ({source: node.id, target: newNode.id}))]}))
   }
 
   useEffect(() => {
