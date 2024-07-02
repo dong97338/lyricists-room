@@ -5,8 +5,8 @@ import {useState} from 'react'
 export default () => {
   const router = useRouter()
   const [topic, setTopic] = useState('')
+  
   return (
-
     <div className="text-center min-h-screen flex flex-col justify-center items-center">
       <h1 className="text-5xl font-bold mb-8">Lyricist's Room</h1>
       <input type="text" placeholder="WRITE YOUR TOPIC" className="w-80 p-3 mb-4 border rounded-md text-lg" value={topic} onChange={e => setTopic(e.target.value)} />

@@ -4,7 +4,6 @@ import {useSearchParams} from 'next/navigation'
 import * as d3 from 'd3'
 import OpenAI from 'openai'
 import dotenv from 'dotenv'
-
 dotenv.config()
 
 function Graph() {
@@ -12,16 +11,12 @@ function Graph() {
   const [graph, setGraph] = useState({nodes: [{id: 1, name: searchParams.get('topic') || 'No topic', fx: 480, fy: 300}], links: []})
   const [sentence, setSentence] = useState('')
   const svgRef = useRef(null)
-  const openai = new OpenAI({apiKey: process.env.NEXT_PUBLIC_OPENAI_KEY,dangerouslyAllowBrowser: true})
-  
-  const generateResponse = async (nodeName) => {
-    const prompt = `"${nodeName}"와 관련된 단어 3개를 쉼표로 나눠서 제시해줘. 예) 단어1, 단어2, 단어3`
-    const response = await openai.chat.completions.create({
-      model: 'gpt-3.5-turbo-0125',
-      messages: [{role: 'user', content: prompt}],
-      temperature: 0
-    })
-    return response.choices[0].message.content.trim().split(',').map(name => name.trim())
+  const openai = new OpenAI({apiKey: process.env.NEXT_PUBLIC_OPENAI_KEY, dangerouslyAllowBrowser: true})
+
+  const generateResponse = async nodeName => {
+    const prompt = `"${nodeName}"와 관련된 단어 3개를 쉼표로 나눠서 제시해줘. 예) 단어1,단어2,단어3`
+    const response = await openai.chat.completions.create({model: 'gpt-3.5-turbo-0125', messages: [{role: 'user', content: prompt}], temperature: 0})
+    return response.choices[0].message.content.split(',')
   }
 
   const handleNodeClick = async node => {
@@ -29,7 +24,7 @@ function Graph() {
     const childNodeNames = await generateResponse(node.name)
     const newNodes = childNodeNames.map((childName, i) => ({
       id: graph.nodes.length + i + 1,
-      name: childName,
+      name: childName.trim(),
       x: node.x + 50 * Math.cos(i * angleStep),
       y: node.y + 50 * Math.sin(i * angleStep)
     }))
