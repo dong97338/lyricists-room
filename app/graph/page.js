@@ -14,15 +14,15 @@ function Graph() {
   const openai = new OpenAI({apiKey: process.env.NEXT_PUBLIC_OPENAI_KEY, dangerouslyAllowBrowser: true})
 
   const generateResponse = async nodeName => {
-    const prompt = `"${nodeName}"와 관련된 단어 3개를 쉼표로 나눠서 제시해줘. 예) 단어1,단어2,단어3`
-    const response = await openai.chat.completions.create({model: 'gpt-3.5-turbo-0125', messages: [{role: 'user', content: prompt}], temperature: 0})
+    const messages = [{role: 'user', content: `"${nodeName}"와 관련된 단어 3개를 쉼표로 나눠서 제시해줘. 예) 단어1,단어2,단어3`}]
+    const response = await openai.chat.completions.create({model: 'gpt-3.5-turbo-0125', messages, temperature: 0})
     return response.choices[0].message.content.split(',')
   }
 
   const handleNodeClick = async node => {
-    const angleStep = (2 * Math.PI) / 3
+    const angle = (2 * Math.PI) / 3
     const childNodeNames = await generateResponse(node.name)
-    const newNodes = childNodeNames.map((name, i) => ({id: graph.nodes.length + i + 1, name, x: node.x + 50 * Math.cos(i * angleStep), y: node.y + 50 * Math.sin(i * angleStep)}))
+    const newNodes = childNodeNames.map((name, i) => ({id: graph.nodes.length + i + 1, name, x: node.x + 50 * Math.cos(i * angle), y: node.y + 50 * Math.sin(i * angle)}))
     const newLinks = newNodes.map(newNode => ({source: node.id, target: newNode.id}))
     setGraph(prevGraph => ({nodes: [...prevGraph.nodes, ...newNodes], links: [...prevGraph.links, ...newLinks]}))
   }
