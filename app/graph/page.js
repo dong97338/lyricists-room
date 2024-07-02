@@ -105,17 +105,17 @@ function Graph() {
   }, [graph])
 
   return (
-    <div className="text-center flex flex-col justify-between min-h-screen">
+    <div className="flex min-h-screen flex-col justify-between text-center">
       <svg ref={svgRef} width="960" height="600"></svg>
-      <div className="mb-16 flex items-center justify-center w-full">
+      <div className="mb-16 flex w-full items-center justify-center">
         <input
           type="text"
           placeholder="MAKE A SENTENCE USING THE CHOSEN WORD"
-          className="w-128 p-3 border rounded-md text-lg"
+          className="w-128 rounded-md border p-3 text-lg"
           value={sentence}
           onChange={e => setSentence(e.target.value)}
         />
-        <button className="ml-4 p-3 bg-gray-400 rounded-md text-lg" onClick={() => alert(`Sentence: ${sentence}`)}>
+        <button className="ml-4 rounded-md bg-gray-400 p-3 text-lg" onClick={() => alert(`Sentence: ${sentence}`)}>
           MAKE
         </button>
       </div>
