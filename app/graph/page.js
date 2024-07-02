@@ -12,7 +12,6 @@ function Graph() {
   const [graph, setGraph] = useState({nodes: [{id: 1, name: searchParams.get('topic') || 'No topic', fx: 480, fy: 300}], links: []})
   const [sentence, setSentence] = useState('')
   const svgRef = useRef(null)
-  console.log(process.env.NEXT_PUBLIC_OPENAI_KEY)
   const openai = new OpenAI({apiKey: process.env.NEXT_PUBLIC_OPENAI_KEY,dangerouslyAllowBrowser: true})
   
   const generateResponse = async (nodeName) => {
