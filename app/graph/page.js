@@ -1,5 +1,5 @@
 'use client'
-import React, {useEffect, useState, useRef, Suspense} from 'react'
+import {useEffect, useState, useRef, Suspense} from 'react'
 import {useSearchParams} from 'next/navigation'
 import * as d3 from 'd3'
 import OpenAI from 'openai'
@@ -22,12 +22,7 @@ function Graph() {
   const handleNodeClick = async node => {
     const angleStep = (2 * Math.PI) / 3
     const childNodeNames = await generateResponse(node.name)
-    const newNodes = childNodeNames.map((childName, i) => ({
-      id: graph.nodes.length + i + 1,
-      name: childName.trim(),
-      x: node.x + 50 * Math.cos(i * angleStep),
-      y: node.y + 50 * Math.sin(i * angleStep)
-    }))
+    const newNodes = childNodeNames.map((name, i) => ({id: graph.nodes.length + i + 1, name, x: node.x + 50 * Math.cos(i * angleStep), y: node.y + 50 * Math.sin(i * angleStep)}))
     const newLinks = newNodes.map(newNode => ({source: node.id, target: newNode.id}))
     setGraph(prevGraph => ({nodes: [...prevGraph.nodes, ...newNodes], links: [...prevGraph.links, ...newLinks]}))
   }
