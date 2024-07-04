@@ -13,15 +13,13 @@ function Graph() {
   const svgRef = useRef(null)
   const openai = new OpenAI({apiKey: process.env.NEXT_PUBLIC_OPENAI_KEY, dangerouslyAllowBrowser: true})
 
-  const generateResponse = async nodeName => {
-    const messages = [{role: 'user', content: `"${nodeName}"와 관련된 단어 3개를 쉼표로 나눠서 제시해줘. 예) 단어1,단어2,단어3`}]
-    const response = await openai.chat.completions.create({model: 'gpt-3.5-turbo-0125', messages, temperature: 0})
-    return response.choices[0].message.content.split(',')
-  }
-
   const handleNodeClick = async node => {
-    const childNodeNames = await generateResponse(node.name)
-    const newNodes = childNodeNames.map((name, i) => ({id: graph.nodes.length + i + 1, name, x: node.x + 50 * Math.cos(2 * i), y: node.y + 50 * Math.sin(2 * i)}))
+    const content = `""키워드"": ${node.name}\n""키메시지"": ${searchParams.get('key') || ''}\n*[최종 답변 형태] 외 답변 금지\n**[답변 금지 단어]: ${graph.nodes.map(node => node.name).join(', ')}`
+    const json = await (await fetch(`${searchParams.get('mood')}.json`)).json()
+    json.messages.push({role: 'user', content})
+    const response = await openai.chat.completions.create(json)
+    const [keyword, relatedWords] = response.choices[0].message.content.match(/(?<=1개: ).+|(?<=6개: ).+/g).map(words => words.split(', '))
+    const newNodes = [keyword, ...relatedWords].map((name, i) => ({id: graph.nodes.length + i + 1, name, x: node.x + 50 * Math.cos(i / 2), y: node.y + 50 * Math.sin(i / 2)}))
     setGraph(prevGraph => ({nodes: [...prevGraph.nodes, ...newNodes], links: [...prevGraph.links, ...newNodes.map(newNode => ({source: node.id, target: newNode.id}))]}))
   }
 
