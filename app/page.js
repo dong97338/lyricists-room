@@ -15,10 +15,11 @@ export default () => {
       <input type="text" placeholder="WRITE YOUR KEY MESSAGE" className="mb-4 w-80 rounded-md border p-3 text-lg" value={key} onChange={e => setKey(e.target.value)} />
       <select className="mb-4 w-80 rounded-md border p-3 text-lg" value={mood} onChange={e => setMood(e.target.value)}>
         <option>곡 분위기를 선택해주세요!</option>
-        <option>그리움</option>
-        <option>설렘</option>
+        {['그리움', '설렘'].map(mood => (
+          <option>{mood}</option>
+        ))}
       </select>
-      <button className="w-80 rounded-md bg-gray-400 p-3 text-lg" onClick={() => router.push(`graph?topic=${encodeURIComponent(topic)}&key=${encodeURIComponent(key)}&mood=${encodeURIComponent(mood)}`)}>
+      <button className="w-80 rounded-md bg-gray-400 p-3 text-lg" onClick={() => router.push(`graph?${new URLSearchParams({topic, key, mood}).toString()}`)}>
         start
       </button>
     </div>
