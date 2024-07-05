@@ -5,26 +5,21 @@ import {useState} from 'react'
 export default () => {
   const router = useRouter()
   const [topic, setTopic] = useState('')
+  const [key, setKey] = useState('')
+  const [mood, setMood] = useState('')
+
   return (
-    <div className="text-center min-h-screen flex flex-col justify-center items-center">
-      <h1 className="text-5xl font-bold mb-8">Lyricist's Room</h1>
-      <input type="text" placeholder="WRITE YOUR TOPIC" className="w-80 p-3 mb-4 border rounded-md text-lg" value={topic} onChange={e => setTopic(e.target.value)} />
-      <select className="w-80 p-3 mb-4 border rounded-md text-lg">
-        <option>CHOOSE YOUR MUSIC 분위기</option>
-        <option>그리움</option>
-        <option>당당함</option>
-        <option>불안함</option>
-        <option>설렘</option>
-        <option>슬픔</option>
-        <option>신남</option>
-        <option>외로움</option>
-        <option>우울함</option>
-        <option>평화로움</option>
-        <option>화남</option>
-        <option>희망찬</option>
-        {/* 원하는 장르를 추가 */}
+    <div className="flex min-h-screen flex-col items-center justify-center text-center">
+      <h1 className="mb-8 text-5xl font-bold">Lyricist's Room</h1>
+      <input type="text" placeholder="WRITE YOUR TOPIC" className="mb-4 w-80 rounded-md border p-3 text-lg" value={topic} onChange={e => setTopic(e.target.value)} />
+      <input type="text" placeholder="WRITE YOUR KEY MESSAGE" className="mb-4 w-80 rounded-md border p-3 text-lg" value={key} onChange={e => setKey(e.target.value)} />
+      <select className="mb-4 w-80 rounded-md border p-3 text-lg" value={mood} onChange={e => setMood(e.target.value)}>
+        <option>곡 분위기를 선택해주세요!</option>
+        {['그리움', '당당함', '불안함', '설렘', '슬픔', '신남', '외로움', '우울함', '평화로움', '화남', '희망찬'].map(mood => (
+          <option>{mood}</option>
+        ))}
       </select>
-      <button className="w-80 p-3 bg-gray-400 rounded-md text-lg" onClick={() => router.push(`graph?topic=${encodeURIComponent(topic)}`)}>
+      <button className="w-80 rounded-md bg-gray-400 p-3 text-lg" onClick={() => router.push(`graph?${new URLSearchParams({topic, key, mood}).toString()}`)}>
         start
       </button>
     </div>
