@@ -9,7 +9,7 @@ export default () => {
   const [mood, setMood] = useState('')
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center text-center">
+    <>
       <h1 className="mb-8 text-5xl font-bold">Lyricist's Room</h1>
       <input type="text" placeholder="WRITE YOUR TOPIC" value={topic} onChange={e => setTopic(e.target.value)} />
       <input type="text" placeholder="WRITE YOUR KEY MESSAGE" value={key} onChange={e => setKey(e.target.value)} />
@@ -22,6 +22,6 @@ export default () => {
       <button className="w-80 rounded-md bg-gray-400 p-3 text-lg" onClick={() => router.push(`graph?${new URLSearchParams({topic, key, mood}).toString()}`)}>
         start
       </button>
-    </div>
+    </>
   )
 }

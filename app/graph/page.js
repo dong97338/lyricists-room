@@ -96,7 +96,7 @@ function Graph() {
   }, [graph])
 
   return (
-    <div className="flex min-h-screen flex-col justify-between text-center">
+    <>
       <svg ref={svgRef} width="960" height="600"></svg>
       <div className="mb-16 flex w-full items-center justify-center">
         <input type="text" placeholder="MAKE A SENTENCE USING THE CHOSEN WORD" value={sentence} onChange={e => setSentence(e.target.value)} />
@@ -104,7 +104,7 @@ function Graph() {
           MAKE
         </button>
       </div>
-    </div>
+    </>
   )
 }
 

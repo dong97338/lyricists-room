@@ -2,6 +2,6 @@ import './globals.css'
 
 export default ({children}) => (
   <html lang="en">
-    <body className="min-h-screen flex justify-center items-center">{children}</body>
+    <body className="flex min-h-screen flex-col items-center justify-center">{children}</body>
   </html>
 )
