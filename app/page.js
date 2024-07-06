@@ -1,9 +1,8 @@
 'use client'
-import {useRouter} from 'next/navigation'
 import {useState} from 'react'
+import Link from 'next/link'
 
 export default () => {
-  const router = useRouter()
   const [topic, setTopic] = useState('')
   const [key, setKey] = useState('')
   const [mood, setMood] = useState('')
@@ -19,9 +18,9 @@ export default () => {
           <option>{mood}</option>
         ))}
       </select>
-      <button className="w-80 rounded-md bg-gray-400 p-3 text-lg" onClick={() => router.push(`graph?${new URLSearchParams({topic, key, mood}).toString()}`)}>
+      <Link className="w-80 rounded-md bg-gray-400 p-3 text-center text-lg" href={`graph?${new URLSearchParams({topic, key, mood}).toString()}`}>
         start
-      </button>
+      </Link>
     </>
   )
 }
