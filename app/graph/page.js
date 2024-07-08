@@ -15,7 +15,7 @@ function Graph() {
 
   const handleNodeClick = async node => {
     const content = `""키워드"": ${node.name}\n""키메시지"": ${searchParams.get('key') || ''}\n*[최종 답변 형태] 외 답변 금지\n**[답변 금지 단어]: ${graph.nodes.map(node => node.name).join(', ')}`
-    const json = await (await fetch(`${searchParams.get('mood')}.json`)).json()
+    const json = await (await fetch(`${searchParams.get('mood')}.json`)).json() //분위기 json 가져오기
     json.messages.push({role: 'user', content})
     const response = await openai.chat.completions.create(json)
     const [keyword, relatedWords] = response.choices[0].message.content.match(/(?<=1개: ).+|(?<=6개: ).+/g).map(words => words.split(', '))
