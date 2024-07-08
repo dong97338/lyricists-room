@@ -10,10 +10,12 @@ function Graph() {
   const searchParams = useSearchParams()
   const [graph, setGraph] = useState({nodes: [{id: 1, name: searchParams.get('topic') || 'No topic', fx: 480, fy: 300}], links: []})
   const [sentence, setSentence] = useState('')
+  const [loadingNode, setLoadingNode] = useState(null)
   const svgRef = useRef(null)
   const openai = new OpenAI({apiKey: process.env.NEXT_PUBLIC_OPENAI_KEY, dangerouslyAllowBrowser: true})
 
   const handleNodeClick = async node => {
+    setLoadingNode(node.id)
     const content = `""키워드"": ${node.name}\n""키메시지"": ${searchParams.get('key') || ''}\n*[최종 답변 형태] 외 답변 금지\n**[답변 금지 단어]: ${graph.nodes.map(node => node.name).join(', ')}`
     const json = await (await fetch(`${searchParams.get('mood')}.json`)).json()
     json.messages.push({role: 'user', content})
@@ -21,6 +23,7 @@ function Graph() {
     const [keyword, relatedWords] = response.choices[0].message.content.match(/(?<=1개: ).+|(?<=6개: ).+/g).map(words => words.split(', '))
     const newNodes = [keyword, ...relatedWords].map((name, i) => ({id: graph.nodes.length + i + 1, name, x: node.x + 50 * Math.cos(i / 2), y: node.y + 50 * Math.sin(i / 2)}))
     setGraph(prevGraph => ({nodes: [...prevGraph.nodes, ...newNodes], links: [...prevGraph.links, ...newNodes.map(newNode => ({source: node.id, target: newNode.id}))]}))
+    setLoadingNode(null)
   }
 
   useEffect(() => {
@@ -79,6 +82,14 @@ function Graph() {
                     }
                   })
               )
+              .on('mouseenter', function (e, d) {
+                d3.select(this).select('circle').attr('fill', '#ffa500') // Change the node color on hover
+                svg.style('cursor', 'pointer') // Change cursor to pointer
+              })
+              .on('mouseleave', function (e, d) {
+                d3.select(this).select('circle').attr('fill', '#d9d9d9') // Revert the node color
+                svg.style('cursor', 'default') // Revert cursor to default
+              })
             nodeEnter.append('circle').attr('r', 20).attr('fill', '#d9d9d9')
             nodeEnter
               .append('text')
@@ -86,6 +97,20 @@ function Graph() {
               .attr('x', -10)
               .attr('font-size', 12)
               .text(d => d.name)
+            nodeEnter.each(function (d) {
+              if (loadingNode === d.id) {
+                d3.select(this)
+                  .append('svg')
+                  .attr('x', -35)
+                  .attr('y', -35)
+                  .attr('width', 70)
+                  .attr('height', 70)
+                  .attr('viewBox', '0 0 200 200')
+                  .html(
+                    "<radialGradient id='a10' cx='.66' fx='.66' cy='.3125' fy='.3125' gradientTransform='scale(1.5)'><stop offset='0' stop-color='#000000'></stop><stop offset='.3' stop-color='#000000' stop-opacity='.9'></stop><stop offset='.6' stop-color='#000000' stop-opacity='.6'></stop><stop offset='.8' stop-color='#000000' stop-opacity='.3'></stop><stop offset='1' stop-color='#000000' stop-opacity='0'></stop></radialGradient><circle transform-origin='center' fill='none' stroke='url(#a10)' stroke-width='15' stroke-linecap='round' stroke-dasharray='200 1000' stroke-dashoffset='0' cx='100' cy='100' r='70'><animateTransform type='rotate' attributeName='transform' calcMode='spline' dur='2' values='360;0' keyTimes='0;1' keySplines='0 0 1 1' repeatCount='indefinite'></animateTransform></circle><circle transform-origin='center' fill='none' opacity='.2' stroke='#000000' stroke-width='15' stroke-linecap='round' cx='100' cy='100' r='70'></circle>"
+                  )
+              }
+            })
             return nodeEnter
           })
           .attr('transform', d => `translate(${d.x},${d.y})`)
@@ -93,7 +118,7 @@ function Graph() {
     simulation.nodes(graph.nodes)
     simulation.force('link').links(graph.links)
     simulation.alpha(1).restart()
-  }, [graph])
+  }, [graph, loadingNode])
 
   return (
     <>
