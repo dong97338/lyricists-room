@@ -8,7 +8,7 @@ dotenv.config()
 
 function Graph() {
   const searchParams = useSearchParams()
-  const [graph, setGraph] = useState({nodes: [{id: 1, name: searchParams.get('topic') || 'No topic', fx: 480, fy: 300}], links: []})
+  const [graph, setGraph] = useState({nodes: [{id: 1, name: searchParams.get('topic') || 'No topic', fx: 920,fy: 400}], links: []})
   const [sentence, setSentence] = useState('')
   const [loadingNode, setLoadingNode] = useState(null)
   const svgRef = useRef(null)
@@ -29,8 +29,21 @@ function Graph() {
   useEffect(() => {
     const svg = d3.select(svgRef.current)
     svg.selectAll('*').remove()
-    const linkGroup = svg.append('g').attr('class', 'links')
-    const nodeGroup = svg.append('g').attr('class', 'nodes')
+  
+    // Add zoom functionality
+    const zoom = d3.zoom()
+      .scaleExtent([0.1, 10])  // Set the scale extent to control zoom level
+      .on('zoom', (event) => {
+        svgGroup.attr('transform', event.transform)
+      })
+  
+    svg.call(zoom)
+  
+    const svgGroup = svg.append('g')  // Add a group to apply zoom transformations
+  
+    const linkGroup = svgGroup.append('g').attr('class', 'links')
+    const nodeGroup = svgGroup.append('g').attr('class', 'nodes')
+  
     const simulation = d3
       .forceSimulation(graph.nodes)
       .force(
@@ -90,11 +103,12 @@ function Graph() {
                 d3.select(this).select('circle').attr('fill', '#d9d9d9') // Revert the node color
                 svg.style('cursor', 'default') // Revert cursor to default
               })
-            nodeEnter.append('circle').attr('r', 20).attr('fill', '#d9d9d9')
+            nodeEnter.append('circle').attr('r', 30).attr('fill', '#d9d9d9')
             nodeEnter
               .append('text')
               .attr('dy', 4)
-              .attr('x', -10)
+              .attr('x', 0)  // 중앙 정렬을 위해 x 속성을 0으로 설정
+              .attr('text-anchor', 'middle')  // 중앙 정렬을 위해 text-anchor 속성을 middle로 설정
               .attr('font-size', 12)
               .text(d => d.name)
             nodeEnter.each(function (d) {
@@ -122,10 +136,20 @@ function Graph() {
 
   return (
     <>
-      <svg ref={svgRef} width="960" height="600"></svg>
-      <div className="mb-16 flex w-full items-center justify-center">
-        <input type="text" placeholder="MAKE A SENTENCE USING THE CHOSEN WORD" value={sentence} onChange={e => setSentence(e.target.value)} />
-        <button className="ml-4 rounded-md bg-gray-400 p-3 text-lg" onClick={() => alert(`Sentence: ${sentence}`)}>
+      <svg ref={svgRef} width="1840" height="800"></svg>
+      <div className="flex w-full items-center justify-center" style={{ marginTop: '50px', marginBottom: '0px' }}>
+        <input
+          type="text"
+          placeholder="MAKE A SENTENCE USING THE CHOSEN WORD"
+          value={sentence}
+          onChange={e => setSentence(e.target.value)}
+          style={{ width: '500px', height: '40px', padding: '0 10px', fontSize: '16px', boxSizing: 'border-box' }}
+        />
+        <button
+          className="ml-4 rounded-md bg-gray-400 text-lg"
+          style={{ height: '40px', padding: '0 20px', fontSize: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+          onClick={() => alert(`Sentence: ${sentence}`)}
+        >
           MAKE
         </button>
       </div>
