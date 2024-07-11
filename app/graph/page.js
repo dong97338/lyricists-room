@@ -94,12 +94,13 @@ function Graph() {
                   d3.select(this).select('circle').attr('fill', '#d9d9d9') // Revert the node color
                   svg.style('cursor', 'default') // Revert cursor to default
                 })
-              nodeEnter.append('circle').attr('r', 20).attr('fill', '#d9d9d9')
+              nodeEnter.append('circle').attr('r', 30).attr('fill', '#d9d9d9')
               nodeEnter
                 .append('text')
                 .attr('dy', 4)
-                .attr('x', -10)
+                .attr('x', 0)
                 .attr('font-size', 12)
+                .attr('text-anchor', 'middle') // 텍스트를 가운데 정렬합니다.
                 .text(d => d.name)
 
               nodeEnter.each(function (d) {
