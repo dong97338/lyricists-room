@@ -9,5 +9,5 @@ body {
   box-sizing: border-box;
 }
 input, select {
-  @apply mb-4 w-80 rounded-md border p-3 text-lg;
+  @apply w-80 rounded-md border p-3 text-lg;
 }
