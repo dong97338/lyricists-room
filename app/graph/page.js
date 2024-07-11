@@ -46,10 +46,9 @@ function Graph() {
       .force('charge', d3.forceManyBody().strength(-500))
       .force('collision', d3.forceCollide().radius(40))
       .on('tick', () => {
-        const maxSpeed = 0.01 // 속도 제한 값 설정
         graph.nodes.forEach(d => {
-          d.vx = Math.max(-maxSpeed, Math.min(maxSpeed, d.vx))
-          d.vy = Math.max(-maxSpeed, Math.min(maxSpeed, d.vy))
+          d.vx = 0
+          d.vy = 0
         })
         linkGroup
           .selectAll('line')
