@@ -34,7 +34,9 @@ export default () => {
           <option key={mood}>{mood}</option>
         ))}
       </select>
+      
       <Link
+        
         href={`graph?${new URLSearchParams({topic, key, mood}).toString()}`}
         className="rounded-md bg-gray-400 text-center text-xl"
         style={{ display: 'inline-block', width: '200px', padding: '10px'}} // 스타일 추가
