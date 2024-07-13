@@ -9,7 +9,7 @@ dotenv.config()
 function Graph() {
   const searchParams = useSearchParams()
   const router = useRouter()
-  const [graph, setGraph] = useState({nodes: [{id: 1, name: searchParams.get('topic') || 'No topic', fx: 910, fy: 300}], links: []})
+  const [graph, setGraph] = useState({nodes: [{id: 1, name: searchParams.get('topic') || 'No topic', fx: 910, fy: 400}], links: []})
   const [sentence, setSentence] = useState('')
   const [loadingNode, setLoadingNode] = useState(null)
   const [chips, setChips] = useState([]) // 클릭한 단어들을 저장할 상태 변수
@@ -178,74 +178,68 @@ function Graph() {
     simulation.alpha(1).restart()
   }, [graph, loadingNode])
 
-return (
-<div style={{display: 'flex', height: '100vh', overflow: 'hidden'}}>
-  {sidebarOpen && (
-    <div style={{width: '500px', background: '#efefef', padding: '20px', position: 'absolute', left: 0, top: 0, bottom: 0, overflowY: 'auto', zIndex: 1000}}>
-      <button onClick={toggleSidebar} style={{padding: '0px', fontSize: '16px', marginBottom: '10px', marginLeft: '35px'}}>
-        Close
-      </button>
-      {history.map((entry, index) => (
-        <div key={index} style={{padding: '10px', margin: '5px'}}>
-          <div style={{display: 'flex', flexWrap: 'wrap', marginBottom: '10px'}}>
-            {entry.chips.map((chip, chipIndex) => (
-              <div key={chipIndex} style={{padding: '5px 10px', margin: '5px', background: '#d9d9d9', borderRadius: '16px'}}>
-                {chip}
-              </div>
-            ))}
-          </div>
-          <div style={{whiteSpace: 'pre-wrap', wordWrap: 'break-word'}}></div>
-          {entry.answers.map((answer, answerIndex) => (
-            <div key={answerIndex} style={{whiteSpace: 'pre-wrap', wordWrap: 'break-word'}}>
-              {answer}
-            </div>
-          ))}
-        </div>
-      ))}
-    </div>
-  )}
-
-  <div style={{flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100vh', overflow: 'hidden',marginLeft: sidebarOpen ? '500px' : '0'}}>
-    <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%', padding: '10px 20px', boxSizing: 'border-box'}}>
-    <button onClick={toggleSidebar} style={{padding: '10px', fontSize: '16px'}}>
-      {sidebarOpen ? 'Close' : 'Maker Mode'}
-    </button>
-    <button onClick={() => router.push('/')} style={{padding: '10px', fontSize: '16px', marginRight: sidebarOpen ? '250px' : '0'}}>
-      Home
-    </button>
-  </div>
-
-    <svg ref={svgRef} width="1820" height="100%" style={{flex: '1'}}></svg>
-    <div className="flex w-full flex-col items-center justify-center" style={{marginTop: '0px', marginBottom: '0px'}}>
-      <div className="flex w-full flex-col items-center justify-center" style={{marginTop: '0px', marginBottom: '0px'}}>
-        <div style={{width: '100%', padding: '10px', display: 'flex', flexWrap: 'wrap', justifyContent: 'center'}}>
-          {chips.map((chip, index) => (
-            <div key={index} style={{padding: '5px 10px', margin: '5px', background: '#d9d9d9', borderRadius: '16px', cursor: 'pointer'}} onClick={() => handleChipClick(chip)}>
-              {chip}
-            </div>
-          ))}
-        </div>
-
-        <div className="flex items-center" style={{width: '100%', justifyContent: 'center', marginBottom: '30px'}}>
-          <input
-            type="text"
-            placeholder="MAKE A SENTENCE USING THE CHOSEN WORD"
-            value={sentence}
-            onChange={e => setSentence(e.target.value)}
-            style={{width: '500px', height: '40px', padding: '0 10px', fontSize: '16px', boxSizing: 'border-box'}}
-          />
-          <button
-            className="ml-4 rounded-md bg-gray-400 text-lg"
-            style={{height: '40px', padding: '0 20px', fontSize: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center'}}
-            onClick={handleMakeClick}>
-            MAKE
+  return (
+    <div className="flex h-screen overflow-hidden">
+      {sidebarOpen && (
+        <div className="absolute bottom-0 left-0 top-0 z-50 w-[500px] overflow-y-auto bg-gray-200 p-5">
+          <button onClick={toggleSidebar} className="mb-2.5 ml-8 p-0 text-lg">
+            Close
           </button>
+          {history.map((entry, index) => (
+            <div key={index} className="mb-1.5 p-2.5">
+              <div className="mb-2.5 flex flex-wrap">
+                {entry.chips.map((chip, chipIndex) => (
+                  <div key={chipIndex} className="mb-1.5 mr-1.5 rounded-full bg-gray-300 p-2.5">
+                    {chip}
+                  </div>
+                ))}
+              </div>
+              <div className="whitespace-pre-wrap break-words"></div>
+              {entry.answers.map((answer, answerIndex) => (
+                <div key={answerIndex} className="whitespace-pre-wrap break-words">
+                  {answer}
+                </div>
+              ))}
+            </div>
+          ))}
+        </div>
+      )}
+
+      <div className={`flex h-screen flex-1 flex-col items-center overflow-hidden`}>
+        <button onClick={toggleSidebar} className="fixed left-0 top-0 p-2.5 text-lg">
+          {sidebarOpen ? 'Close' : 'Maker Mode'}
+        </button>
+        <button onClick={() => router.push('/')} className={`fixed right-0 top-0 p-2.5 text-lg `}>
+          Home
+        </button>
+
+        <svg ref={svgRef} width="1820" height="100%" className="flex-1"></svg>
+        <div className="mb-0 mt-0 flex w-full flex-col items-center justify-center">
+          <div className="mb-0 mt-0 flex w-full flex-col items-center justify-center">
+            <div className="flex w-full flex-wrap justify-center p-2.5">
+              {chips.map((chip, index) => (
+                <div key={index} className="m-1.5 cursor-pointer rounded-full bg-gray-300 p-2.5" onClick={() => handleChipClick(chip)}>
+                  {chip}
+                </div>
+              ))}
+            </div>
+
+            <div className="mb-8 flex w-full items-center justify-center">
+              <input
+                type="text"
+                placeholder="MAKE A SENTENCE USING THE CHOSEN WORD"
+                value={sentence}
+                onChange={e => setSentence(e.target.value)}
+                className="box-border h-10 w-[500px] p-2.5 text-lg"
+              />
+              <button className="ml-4 flex h-10 items-center justify-center rounded-md bg-gray-400 px-5 text-lg" onClick={handleMakeClick}>
+                MAKE
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-</div>
-
   )
 }
 
