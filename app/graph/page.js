@@ -36,7 +36,6 @@ function Graph() {
       setSentence(prevSentence => (prevSentence ? `${prevSentence}, ${node.name}` : node.name)) // 사이드바가 열려 있을 때만 입력 필드에 단어 추가
       return
     }
-
     setLoadingNode(node.id)
     const content = `""키워드"": ${node.name}\n""키메시지"": ${searchParams.get('key') || ''}\n*[최종 답변 형태] 외 답변 금지\n**[답변 금지 단어]: ${graph.nodes.map(node => node.name).join(', ')}`
     const json = await (await fetch(`${searchParams.get('mood')}.json`)).json() // 분위기 json 가져오기
