@@ -187,7 +187,7 @@ function Graph() {
     <div className="flex h-screen overflow-hidden">
       {sidebarOpen && (
         <div className="absolute bottom-0 left-0 top-0 z-50 w-[500px] overflow-y-auto bg-gray-200 p-5">
-          <button onClick={toggleSidebar} className="mb-2.5 ml-8 p-0 text-lg">
+          <button onClick={toggleSidebar} className="mb-2.5 ml-2.5 p-1 text-lg">
             Close
           </button>
           {history.map((entry, index) => (
@@ -211,10 +211,10 @@ function Graph() {
       )}
 
       <div className={`flex h-screen flex-1 flex-col items-center overflow-hidden`}>
-        <button onClick={toggleSidebar} className="fixed left-0 top-0 p-2.5 text-lg">
+        <button onClick={toggleSidebar} className="fixed left-2.5 top-0 p-6 text-lg">
           {sidebarOpen ? 'Close' : 'Maker Mode'}
         </button>
-        <button onClick={() => router.push('/')} className={`fixed right-0 top-0 p-2.5 text-lg `}>
+        <button onClick={() => router.push('/')} className={`fixed right-2.5 top-0 p-6 text-lg `}>
           Home
         </button>
 
@@ -235,9 +235,9 @@ function Graph() {
                 placeholder="MAKE A SENTENCE USING THE CHOSEN WORD"
                 value={sentence}
                 onChange={e => setSentence(e.target.value)}
-                className="box-border h-10 w-[500px] p-2.5 text-lg"
+                className="box-border h-10 w-[500px] p-2.5 text-base"
               />
-              <button className="ml-4 flex h-10 items-center justify-center rounded-md bg-gray-400 px-5 text-lg" onClick={handleMakeClick}>
+              <button className="ml-4 flex h-10 items-center justify-center rounded-md bg-gray-400 px-5 text-base" onClick={handleMakeClick}>
                 MAKE
               </button>
             </div>
