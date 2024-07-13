@@ -1,5 +1,4 @@
 'use client'
-import dynamic from 'next/dynamic'
 import {useEffect, useState, useRef, Suspense} from 'react'
 import {useSearchParams, useRouter} from 'next/navigation'
 import * as d3 from 'd3'
@@ -19,14 +18,6 @@ function Graph() {
   const svgRef = useRef(null)
   const openai = new OpenAI({apiKey: process.env.NEXT_PUBLIC_OPENAI_KEY, dangerouslyAllowBrowser: true})
 
-  useEffect(() => {
-    // 처음 로드될 때 스크롤 방지 및 스타일 설정
-    document.body.style.overflow = 'hidden'
-    return () => {
-      // 컴포넌트 언마운트 시 스타일 초기화
-      document.body.style.overflow = 'auto'
-    }
-  }, [])
 
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen)
@@ -56,9 +47,7 @@ function Graph() {
     setChips(prevChips => [...prevChips, node.name]) // 클릭한 단어를 Chips에 추가
   }
 
-  const handleChipClick = chip => {
-    setSentence(prevSentence => (prevSentence ? `${prevSentence}, ${chip}` : chip))
-  }
+  const handleChipClick = chip => setSentence(prevSentence => (prevSentence ? `${prevSentence}, ${chip}` : chip))
 
   const handleMakeClick = async () => {
     if (!sentence.trim()) {
