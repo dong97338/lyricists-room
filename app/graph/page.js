@@ -1,7 +1,7 @@
 'use client'
-import dynamic from "next/dynamic";
-import { useEffect, useState, useRef, Suspense } from 'react'
-import { useSearchParams, useRouter } from 'next/navigation'
+import dynamic from 'next/dynamic'
+import {useEffect, useState, useRef, Suspense} from 'react'
+import {useSearchParams, useRouter} from 'next/navigation'
 import * as d3 from 'd3'
 import OpenAI from 'openai'
 import dotenv from 'dotenv'
@@ -10,67 +10,67 @@ dotenv.config()
 function Graph() {
   const searchParams = useSearchParams()
   const router = useRouter()
-  const [graph, setGraph] = useState({ nodes: [{ id: 1, name: searchParams.get('topic') || 'No topic', fx: 910, fy: 390 }], links: [] })
+  const [graph, setGraph] = useState({nodes: [{id: 1, name: searchParams.get('topic') || 'No topic', fx: 910, fy: 390}], links: []})
   const [sentence, setSentence] = useState('')
   const [loadingNode, setLoadingNode] = useState(null)
   const [chips, setChips] = useState([]) // 클릭한 단어들을 저장할 상태 변수
   const [history, setHistory] = useState([]) // 응답을 저장할 상태 변수
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const svgRef = useRef(null)
-  const openai = new OpenAI({ apiKey: process.env.NEXT_PUBLIC_OPENAI_KEY, dangerouslyAllowBrowser: true })
+  const openai = new OpenAI({apiKey: process.env.NEXT_PUBLIC_OPENAI_KEY, dangerouslyAllowBrowser: true})
 
   useEffect(() => {
     // 처음 로드될 때 스크롤 방지 및 스타일 설정
-    document.body.style.overflow = 'hidden';
+    document.body.style.overflow = 'hidden'
     return () => {
       // 컴포넌트 언마운트 시 스타일 초기화
-      document.body.style.overflow = 'auto';
-    };
-  }, []);
+      document.body.style.overflow = 'auto'
+    }
+  }, [])
 
   const toggleSidebar = () => {
-    setSidebarOpen(!sidebarOpen);
+    setSidebarOpen(!sidebarOpen)
     if (!sidebarOpen) {
-      document.body.style.overflow = 'hidden';
+      document.body.style.overflow = 'hidden'
     } else {
-      document.body.style.overflow = 'auto';
+      document.body.style.overflow = 'auto'
     }
-  };
+  }
 
   const handleHomeClick = () => {
-    router.push('/');
-    console.log('Home button clicked');
-  };
+    router.push('/')
+    console.log('Home button clicked')
+  }
 
   const handleNodeClick = async (e, node) => {
     e.stopPropagation()
     setLoadingNode(node.id)
     const content = `""키워드"": ${node.name}\n""키메시지"": ${searchParams.get('key') || ''}\n*[최종 답변 형태] 외 답변 금지\n**[답변 금지 단어]: ${graph.nodes.map(node => node.name).join(', ')}`
     const json = await (await fetch(`${searchParams.get('mood')}.json`)).json() // 분위기 json 가져오기
-    json.messages.push({ role: 'user', content })
+    json.messages.push({role: 'user', content})
     const response = await openai.chat.completions.create(json)
     const [keyword, relatedWords] = response.choices[0].message.content.match(/(?<=1개: ).+|(?<=6개: ).+/g).map(words => words.split(', '))
-    const newNodes = [keyword, ...relatedWords].map((name, i) => ({ id: graph.nodes.length + i + 1, name, x: node.x + 50 * Math.cos(i / 2), y: node.y + 50 * Math.sin(i / 2) }))
-    setGraph(prevGraph => ({ nodes: [...prevGraph.nodes, ...newNodes], links: [...prevGraph.links, ...newNodes.map(newNode => ({ source: node.id, target: newNode.id }))] }))
+    const newNodes = [keyword, ...relatedWords].map((name, i) => ({id: graph.nodes.length + i + 1, name, x: node.x + 50 * Math.cos(i / 2), y: node.y + 50 * Math.sin(i / 2)}))
+    setGraph(prevGraph => ({nodes: [...prevGraph.nodes, ...newNodes], links: [...prevGraph.links, ...newNodes.map(newNode => ({source: node.id, target: newNode.id}))]}))
     setLoadingNode(null)
     setChips(prevChips => [...prevChips, node.name]) // 클릭한 단어를 Chips에 추가
   }
 
-  const handleChipClick = (chip) => {
-    setSentence(prevSentence => prevSentence ? `${prevSentence}, ${chip}` : chip)
+  const handleChipClick = chip => {
+    setSentence(prevSentence => (prevSentence ? `${prevSentence}, ${chip}` : chip))
   }
 
   const handleMakeClick = async () => {
     if (!sentence.trim()) {
-      return; // 입력창에 아무것도 적혀있지 않으면 함수 종료
+      return // 입력창에 아무것도 적혀있지 않으면 함수 종료
     }
     const mood = searchParams.get('mood')
     const json = await (await fetch(`${mood}make.json`)).json() // 분위기 json 가져오기
-    json.messages.push({ role: 'user', content: sentence })
+    json.messages.push({role: 'user', content: sentence})
     const response = await openai.chat.completions.create(json)
     const answers = response.choices[0].message.content.split('\n') // 문장을 개별 문장으로 분리
-  
-    setHistory(prevHistory => [...prevHistory, { chips: sentence.split(',').map(word => word.trim()), answers }])
+
+    setHistory(prevHistory => [...prevHistory, {chips: sentence.split(',').map(word => word.trim()), answers}])
     setSentence('')
     alert(`Response: ${response.choices[0].message.content}`)
   }
@@ -80,7 +80,7 @@ function Graph() {
     svg.selectAll('*').remove()
 
     // Add zoom functionality
-    const containerGroup = svg.append('g')  // Add a group to apply zoom transformations
+    const containerGroup = svg.append('g') // Add a group to apply zoom transformations
 
     const linkGroup = containerGroup.append('g').attr('class', 'links')
     const nodeGroup = containerGroup.append('g').attr('class', 'nodes')
@@ -190,24 +190,24 @@ function Graph() {
   }, [graph, loadingNode])
 
   return (
-    <div style={{ display: 'flex', height: '100vh', overflow: 'hidden' }}>
+    <div style={{display: 'flex', height: '100vh', overflow: 'hidden'}}>
       {sidebarOpen && (
-        <div style={{ width: '500px', background: '#f0f0f0', padding: '20px', position: 'fixed', left: 0, top: 0, bottom: 0, overflowY: 'auto' }}>
-          <button onClick={toggleSidebar} style={{ padding: '0px', fontSize: '16px', marginBottom: '10px', marginLeft: '35px' }}>
+        <div style={{width: '500px', background: '#f0f0f0', padding: '20px', position: 'fixed', left: 0, top: 0, bottom: 0, overflowY: 'auto'}}>
+          <button onClick={toggleSidebar} style={{padding: '0px', fontSize: '16px', marginBottom: '10px', marginLeft: '35px'}}>
             Close
           </button>
           {history.map((entry, index) => (
-            <div key={index} style={{ padding: '10px', margin: '5px'}}>
-              <div style={{ display: 'flex', flexWrap: 'wrap', marginBottom: '10px' }}>
+            <div key={index} style={{padding: '10px', margin: '5px'}}>
+              <div style={{display: 'flex', flexWrap: 'wrap', marginBottom: '10px'}}>
                 {entry.chips.map((chip, chipIndex) => (
-                  <div key={chipIndex} style={{ padding: '5px 10px', margin: '5px', background: '#d9d9d9', borderRadius: '16px' }}>
+                  <div key={chipIndex} style={{padding: '5px 10px', margin: '5px', background: '#d9d9d9', borderRadius: '16px'}}>
                     {chip}
                   </div>
                 ))}
               </div>
-              <div style={{ whiteSpace: 'pre-wrap', wordWrap: 'break-word' }}></div>
+              <div style={{whiteSpace: 'pre-wrap', wordWrap: 'break-word'}}></div>
               {entry.answers.map((answer, answerIndex) => (
-                <div key={answerIndex} style={{ whiteSpace: 'pre-wrap', wordWrap: 'break-word' }}>
+                <div key={answerIndex} style={{whiteSpace: 'pre-wrap', wordWrap: 'break-word'}}>
                   {answer}
                 </div>
               ))}
@@ -216,40 +216,39 @@ function Graph() {
         </div>
       )}
 
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', marginLeft: sidebarOpen ? '500px' : '0', height: '100vh' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%', padding: '10px 20px', boxSizing: 'border-box', alignItems: 'center' }}>
-          <button onClick={toggleSidebar} style={{ padding: '10px', fontSize: '16px' }}>
+      <div style={{flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', marginLeft: sidebarOpen ? '500px' : '0', height: '100vh'}}>
+        <div style={{display: 'flex', justifyContent: 'space-between', width: '100%', padding: '10px 20px', boxSizing: 'border-box', alignItems: 'center'}}>
+          <button onClick={toggleSidebar} style={{padding: '10px', fontSize: '16px'}}>
             {sidebarOpen ? 'Close' : 'History'}
           </button>
-          <button onClick={handleHomeClick} style={{ padding: '10px', fontSize: '16px', marginRight: sidebarOpen ? '250px' : '0' }}>
+          <button onClick={handleHomeClick} style={{padding: '10px', fontSize: '16px', marginRight: sidebarOpen ? '250px' : '0'}}>
             Home
           </button>
         </div>
 
-        <svg ref={svgRef} width="1820" height="700" style={{ flex: '1' }}></svg>
-        <div className="flex w-full items-center justify-center flex-col" style={{ marginTop: '0px', marginBottom: '0px' }}>
-          <div className="flex w-full items-center justify-center flex-col" style={{ marginTop: '0px', marginBottom: '0px' }}>
-            <div style={{ width: '100%', padding: '10px', display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }}>
+        <svg ref={svgRef} width="1820" height="700" style={{flex: '1'}}></svg>
+        <div className="flex w-full flex-col items-center justify-center" style={{marginTop: '0px', marginBottom: '0px'}}>
+          <div className="flex w-full flex-col items-center justify-center" style={{marginTop: '0px', marginBottom: '0px'}}>
+            <div style={{width: '100%', padding: '10px', display: 'flex', flexWrap: 'wrap', justifyContent: 'center'}}>
               {chips.map((chip, index) => (
-                <div key={index} style={{ padding: '5px 10px', margin: '5px', background: '#d9d9d9', borderRadius: '16px', cursor: 'pointer' }} onClick={() => handleChipClick(chip)}>
+                <div key={index} style={{padding: '5px 10px', margin: '5px', background: '#d9d9d9', borderRadius: '16px', cursor: 'pointer'}} onClick={() => handleChipClick(chip)}>
                   {chip}
                 </div>
               ))}
             </div>
 
-            <div className="flex items-center" style={{ width: '100%', justifyContent: 'center', marginBottom: '30px' }}>
+            <div className="flex items-center" style={{width: '100%', justifyContent: 'center', marginBottom: '30px'}}>
               <input
                 type="text"
                 placeholder="MAKE A SENTENCE USING THE CHOSEN WORD"
                 value={sentence}
                 onChange={e => setSentence(e.target.value)}
-                style={{ width: '500px', height: '40px', padding: '0 10px', fontSize: '16px', boxSizing: 'border-box' }}
+                style={{width: '500px', height: '40px', padding: '0 10px', fontSize: '16px', boxSizing: 'border-box'}}
               />
               <button
                 className="ml-4 rounded-md bg-gray-400 text-lg"
-                style={{ height: '40px', padding: '0 20px', fontSize: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-                onClick={handleMakeClick}
-              >
+                style={{height: '40px', padding: '0 20px', fontSize: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center'}}
+                onClick={handleMakeClick}>
                 MAKE
               </button>
             </div>
