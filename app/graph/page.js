@@ -9,7 +9,7 @@ dotenv.config()
 function Graph() {
   const searchParams = useSearchParams()
   const router = useRouter()
-  const [graph, setGraph] = useState({nodes: [{id: 1, name: searchParams.get('topic') || 'No topic', fx: 910, fy: 390}], links: []})
+  const [graph, setGraph] = useState({nodes: [{id: 1, name: searchParams.get('topic') || 'No topic', fx: 910, fy: 300}], links: []})
   const [sentence, setSentence] = useState('')
   const [loadingNode, setLoadingNode] = useState(null)
   const [chips, setChips] = useState([]) // 클릭한 단어들을 저장할 상태 변수
@@ -32,6 +32,10 @@ function Graph() {
 
   const handleNodeClick = async (e, node) => {
     e.stopPropagation()
+    if (sidebarOpen) {
+      setSentence(prevSentence => (prevSentence ? `${prevSentence}, ${node.name}` : node.name)) // 사이드바가 열려 있을 때만 입력 필드에 단어 추가
+      return
+    }
     setLoadingNode(node.id)
     const content = `""키워드"": ${node.name}\n""키메시지"": ${searchParams.get('key') || ''}\n*[최종 답변 형태] 외 답변 금지\n**[답변 금지 단어]: ${graph.nodes.map(node => node.name).join(', ')}`
     const json = await (await fetch(`${searchParams.get('mood')}.json`)).json() // 분위기 json 가져오기
@@ -41,7 +45,6 @@ function Graph() {
     const newNodes = [keyword, ...relatedWords].map((name, i) => ({id: graph.nodes.length + i + 1, name, x: node.x + 50 * Math.cos(i / 2), y: node.y + 50 * Math.sin(i / 2)}))
     setGraph(prevGraph => ({nodes: [...prevGraph.nodes, ...newNodes], links: [...prevGraph.links, ...newNodes.map(newNode => ({source: node.id, target: newNode.id}))]}))
     setLoadingNode(null)
-    setChips(prevChips => [...prevChips, node.name]) // 클릭한 단어를 Chips에 추가
   }
 
   const handleChipClick = chip => setSentence(prevSentence => (prevSentence ? `${prevSentence}, ${chip}` : chip))
@@ -175,10 +178,10 @@ function Graph() {
     simulation.alpha(1).restart()
   }, [graph, loadingNode])
 
-  return (
+return (
 <div style={{display: 'flex', height: '100vh', overflow: 'hidden'}}>
   {sidebarOpen && (
-    <div style={{width: '500px', background: '#f0f0f0', padding: '20px', position: 'absolute', left: 0, top: 0, bottom: 0, overflowY: 'auto', zIndex: 1000}}>
+    <div style={{width: '500px', background: '#efefef', padding: '20px', position: 'absolute', left: 0, top: 0, bottom: 0, overflowY: 'auto', zIndex: 1000}}>
       <button onClick={toggleSidebar} style={{padding: '0px', fontSize: '16px', marginBottom: '10px', marginLeft: '35px'}}>
         Close
       </button>
@@ -202,17 +205,17 @@ function Graph() {
     </div>
   )}
 
-  <div style={{flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100vh', overflow: 'hidden'}}>
-    <div style={{display: 'flex', justifyContent: 'space-between', width: '100%', padding: '10px 20px', boxSizing: 'border-box', alignItems: 'center'}}>
-      <button onClick={toggleSidebar} style={{padding: '10px', fontSize: '16px'}}>
-        {sidebarOpen ? 'Close' : 'History'}
-      </button>
-      <button onClick={() => router.push('/')} style={{padding: '10px', fontSize: '16px'}}>
-        Home
-      </button>
-    </div>
+  <div style={{flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100vh', overflow: 'hidden',marginLeft: sidebarOpen ? '500px' : '0'}}>
+    <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%', padding: '10px 20px', boxSizing: 'border-box'}}>
+    <button onClick={toggleSidebar} style={{padding: '10px', fontSize: '16px'}}>
+      {sidebarOpen ? 'Close' : 'Maker Mode'}
+    </button>
+    <button onClick={() => router.push('/')} style={{padding: '10px', fontSize: '16px', marginRight: sidebarOpen ? '250px' : '0'}}>
+      Home
+    </button>
+  </div>
 
-    <svg ref={svgRef} width="1820" height="700" style={{flex: '1'}}></svg>
+    <svg ref={svgRef} width="1820" height="100%" style={{flex: '1'}}></svg>
     <div className="flex w-full flex-col items-center justify-center" style={{marginTop: '0px', marginBottom: '0px'}}>
       <div className="flex w-full flex-col items-center justify-center" style={{marginTop: '0px', marginBottom: '0px'}}>
         <div style={{width: '100%', padding: '10px', display: 'flex', flexWrap: 'wrap', justifyContent: 'center'}}>
