@@ -216,7 +216,7 @@ function Graph() {
         </div>
       )}
 
-      <div style={{flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', marginLeft: sidebarOpen ? '500px' : '0', height: '100vh'}}>
+      <div style={{flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', marginLeft: sidebarOpen ? '500px' : '0', height: '100vh', overflow: 'hidden'}}>
         <div style={{display: 'flex', justifyContent: 'space-between', width: '100%', padding: '10px 20px', boxSizing: 'border-box', alignItems: 'center'}}>
           <button onClick={toggleSidebar} style={{padding: '10px', fontSize: '16px'}}>
             {sidebarOpen ? 'Close' : 'History'}
