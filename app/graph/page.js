@@ -18,14 +18,16 @@ function Graph() {
   const svgRef = useRef(null)
   const openai = new OpenAI({apiKey: process.env.NEXT_PUBLIC_OPENAI_KEY, dangerouslyAllowBrowser: true})
 
+  useEffect(() => {
+    document.body.style.overflow = 'hidden'
+    return () => {
+      document.body.style.overflow = 'auto'
+    }
+  }, [])
 
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen)
-    if (!sidebarOpen) {
-      document.body.style.overflow = 'hidden'
-    } else {
-      document.body.style.overflow = 'auto'
-    }
+    document.body.style.overflow = 'hidden'
   }
 
   const handleHomeClick = () => {
@@ -47,7 +49,7 @@ function Graph() {
     setChips(prevChips => [...prevChips, node.name]) // 클릭한 단어를 Chips에 추가
   }
 
-  const handleChipClick = chip => setSentence(prevSentence => (prevSentence ? `${prevSentence}, ${chip}` : chip))
+  const handleChipClick = chip =>     setSentence(prevSentence => (prevSentence ? `${prevSentence}, ${chip}` : chip))
 
   const handleMakeClick = async () => {
     if (!sentence.trim()) {
