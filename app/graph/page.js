@@ -84,7 +84,6 @@ function Graph() {
 
     const linkGroup = containerGroup.append('g').attr('class', 'links')
     const nodeGroup = containerGroup.append('g').attr('class', 'nodes')
-
     const simulation = d3
       .forceSimulation(graph.nodes)
       .force(
@@ -99,6 +98,10 @@ function Graph() {
       .force('collision', d3.forceCollide().radius(40).strength(0.7)) // 충돌 강도를 조정하여 부드럽게 합니다.
       .alphaDecay(0.05) // 시뮬레이션의 알파 감소율을 높여 시뮬레이션이 더 빨리 안정되도록 합니다.
       .on('tick', () => {
+        graph.nodes.forEach(d => {
+          d.vx = 0
+          d.vy = 0
+        })
         linkGroup
           .selectAll('line')
           .data(graph.links)
@@ -112,82 +115,75 @@ function Graph() {
         nodeGroup
           .selectAll('g')
           .data(graph.nodes)
-          .join(
-            enter => {
-              const nodeEnter = enter
-                .append('g')
-                .attr('class', 'node')
-                .on('click', (e, d) => handleNodeClick(e, d))
-                .call(
-                  d3
-                    .drag()
-                    .on('start', (e, d) => {
-                      if (!e.active) simulation.alphaTarget(0.3).restart()
-                      d.fx = d.x
-                      d.fy = d.y
-                    })
-                    .on('drag', (e, d) => {
-                      d.fx = e.x
-                      d.fy = e.y
-                    })
-                    .on('end', (e, d) => {
-                      if (!e.active) simulation.alphaTarget(0)
-                      if (d.id !== 1) {
-                        d.fx = null
-                        d.fy = null
-                      }
-                    })
-                )
-                .on('mouseenter', function (e, d) {
-                  d3.select(this).select('circle').attr('fill', '#ffa500') // Change the node color on hover
-                  svg.style('cursor', 'pointer') // Change cursor to pointer
-                })
-                .on('mouseleave', function (e, d) {
-                  d3.select(this).select('circle').attr('fill', '#d9d9d9') // Revert the node color
-                  svg.style('cursor', 'default') // Revert cursor to default
-                })
-              nodeEnter.append('circle').attr('r', 30).attr('fill', '#d9d9d9')
-              nodeEnter
-                .append('text')
-                .attr('dy', 4)
-                .attr('x', 0)  // 중앙 정렬을 위해 x 속성을 0으로 설정
-                .attr('text-anchor', 'middle')  // 중앙 정렬을 위해 text-anchor 속성을 middle로 설정
-                .attr('font-size', 12)
-                .text(d => d.name)
-
-              nodeEnter.each(function (d) {
-                if (loadingNode === d.id) {
-                  d3.select(this)
-                    .append('svg')
-                    .attr('x', -35)
-                    .attr('y', -35)
-                    .attr('width', 70)
-                    .attr('height', 70)
-                    .attr('viewBox', '0 0 200 200')
-                    .html(
-                      "<radialGradient id='a10' cx='.66' fx='.66' cy='.3125' fy='.3125' gradientTransform='scale(1.5)'><stop offset='0' stop-color='#000000'></stop><stop offset='.3' stop-color='#000000' stop-opacity='.9'></stop><stop offset='.6' stop-color='#000000' stop-opacity='.6'></stop><stop offset='.8' stop-color='#000000' stop-opacity='.3'></stop><stop offset='1' stop-color='#000000' stop-opacity='0'></stop></radialGradient><circle transform-origin='center' fill='none' stroke='url(#a10)' stroke-width='15' stroke-linecap='round' stroke-dasharray='200 1000' stroke-dashoffset='0' cx='100' cy='100' r='70'><animateTransform type='rotate' attributeName='transform' calcMode='spline' dur='2' values='360;0' keyTimes='0;1' keySplines='0 0 1 1' repeatCount='indefinite'></animateTransform></circle><circle transform-origin='center' fill='none' opacity='.2' stroke='#000000' stroke-width='15' stroke-linecap='round' cx='100' cy='100' r='70'></circle>"
-                    )
-                }
+          .join(enter => {
+            const nodeEnter = enter
+              .append('g')
+              .attr('class', 'node')
+              .on('click', (e, d) => handleNodeClick(e, d))
+              .call(
+                d3
+                  .drag()
+                  .on('start', (e, d) => {
+                    if (!e.active) simulation.alphaTarget(0.3).restart()
+                    d.fx = d.x
+                    d.fy = d.y
+                  })
+                  .on('drag', (e, d) => {
+                    d.fx = e.x
+                    d.fy = e.y
+                  })
+                  .on('end', (e, d) => {
+                    if (!e.active) simulation.alphaTarget(0)
+                    if (d.id !== 1) {
+                      d.fx = null
+                      d.fy = null
+                    }
+                  })
+              )
+              .on('mouseenter', function (e, d) {
+                d3.select(this).select('circle').attr('fill', '#ffa500') // Change the node color on hover
+                svg.style('cursor', 'pointer') // Change cursor to pointer
               })
-              return nodeEnter
+              .on('mouseleave', function (e, d) {
+                d3.select(this).select('circle').attr('fill', '#d9d9d9') // Revert the node color
+                svg.style('cursor', 'default') // Revert cursor to default
+              })
+            nodeEnter.append('circle').attr('r', 30).attr('fill', '#d9d9d9')
+            nodeEnter
+              .append('text')
+              .attr('dy', 4)
+              .attr('x', 0)
+              .attr('font-size', 12)
+              .attr('text-anchor', 'middle') // 텍스트를 가운데 정렬합니다.
+              .text(d => d.name)
+            nodeEnter.each(function (d) {
+              if (loadingNode === d.id) {
+                d3.select(this)
+                  .append('svg')
+                  .attr('x', -35)
+                  .attr('y', -35)
+                  .attr('width', 70)
+                  .attr('height', 70)
+                  .attr('viewBox', '0 0 200 200')
+                  .html(
+                    "<radialGradient id='a10' cx='.66' fx='.66' cy='.3125' fy='.3125' gradientTransform='scale(1.5)'><stop offset='0' stop-color='#000000'></stop><stop offset='.3' stop-color='#000000' stop-opacity='.9'></stop><stop offset='.6' stop-color='#000000' stop-opacity='.6'></stop><stop offset='.8' stop-color='#000000' stop-opacity='.3'></stop><stop offset='1' stop-color='#000000' stop-opacity='0'></stop></radialGradient><circle transform-origin='center' fill='none' stroke='url(#a10)' stroke-width='15' stroke-linecap='round' stroke-dasharray='200 1000' stroke-dashoffset='0' cx='100' cy='100' r='70'><animateTransform type='rotate' attributeName='transform' calcMode='spline' dur='2' values='360;0' keyTimes='0;1' keySplines='0 0 1 1' repeatCount='indefinite'></animateTransform></circle><circle transform-origin='center' fill='none' opacity='.2' stroke='#000000' stroke-width='15' stroke-linecap='round' cx='100' cy='100' r='70'></circle>"
+                  )
+              }
             })
+            return nodeEnter
+          })
           .attr('transform', d => `translate(${d.x},${d.y})`)
       })
-
-    // Add zoom and pan functionality
-    const zoom = d3.zoom()
+    const zoom = d3
+      .zoom()
       .scaleExtent([0.1, 10]) // Limit the zoom scale
-      .on('zoom', (event) => {
+      .on('zoom', event => {
         containerGroup.attr('transform', event.transform)
       })
-
     svg.call(zoom)
-
-    // Add background click event to stop the simulation
     svg.on('click', () => {
       simulation.stop()
     })
-
     simulation.nodes(graph.nodes)
     simulation.force('link').links(graph.links)
     simulation.alpha(1).restart()
