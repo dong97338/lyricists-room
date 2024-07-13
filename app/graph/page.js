@@ -15,6 +15,7 @@ function Graph() {
   const [chips, setChips] = useState([]) // 클릭한 단어들을 저장할 상태 변수
   const [history, setHistory] = useState([]) // 응답을 저장할 상태 변수
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const sidebarOpenRef = useRef(sidebarOpen) // 사이드바 상태를 참조할 ref
   const svgRef = useRef(null)
   const openai = new OpenAI({apiKey: process.env.NEXT_PUBLIC_OPENAI_KEY, dangerouslyAllowBrowser: true})
 
@@ -25,6 +26,10 @@ function Graph() {
     }
   }, [])
 
+  useEffect(() => {
+    sidebarOpenRef.current = sidebarOpen
+  }, [sidebarOpen]) // sidebarOpen이 변경될 때마다 ref 업데이트
+
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen)
     document.body.style.overflow = 'hidden'
@@ -32,7 +37,7 @@ function Graph() {
 
   const handleNodeClick = async (e, node) => {
     e.stopPropagation()
-    if (sidebarOpen) {
+    if (sidebarOpenRef.current) {
       setSentence(prevSentence => (prevSentence ? `${prevSentence}, ${node.name}` : node.name)) // 사이드바가 열려 있을 때만 입력 필드에 단어 추가
       return
     }
