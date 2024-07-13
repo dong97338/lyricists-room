@@ -9,7 +9,7 @@ dotenv.config()
 function Graph() {
   const searchParams = useSearchParams()
   const router = useRouter()
-  const [graph, setGraph] = useState({nodes: [{id: 1, name: searchParams.get('topic') || 'No topic', fx: 870, fy: 390}], links: []})
+  const [graph, setGraph] = useState({nodes: [{id: 1, name: searchParams.get('topic') || 'No topic', fx: 910, fy: 390}], links: []})
   const [sentence, setSentence] = useState('')
   const [loadingNode, setLoadingNode] = useState(null)
   const [chips, setChips] = useState([]) // 클릭한 단어들을 저장할 상태 변수
@@ -184,7 +184,7 @@ function Graph() {
             Home
           </button>
         </div>
-        <svg ref={svgRef} width="1840" height="780" style={{ flex: '1' }}></svg>
+        <svg ref={svgRef} width="1820" height="760" style={{ flex: '1' }}></svg>
         <div className="flex w-full items-center justify-center flex-col" style={{ marginTop: '0px', marginBottom: '0px' }}>
           <div style={{ width: '100%', padding: '10px', display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }}>
             {chips.map((chip, index) => (
@@ -193,7 +193,7 @@ function Graph() {
               </div>
             ))}
           </div>
-          <div className="flex items-center" style={{ width: '100%', justifyContent: 'center', marginBottom: '20px' }}>
+          <div className="flex items-center" style={{ width: '100%', justifyContent: 'center', marginBottom: '30px' }}>
             <input
               type="text"
               placeholder="MAKE A SENTENCE USING THE CHOSEN WORD"
