@@ -30,11 +30,6 @@ function Graph() {
     document.body.style.overflow = 'hidden'
   }
 
-  const handleHomeClick = () => {
-    router.push('/')
-    console.log('Home button clicked')
-  }
-
   const handleNodeClick = async (e, node) => {
     e.stopPropagation()
     setLoadingNode(node.id)
@@ -49,7 +44,7 @@ function Graph() {
     setChips(prevChips => [...prevChips, node.name]) // 클릭한 단어를 Chips에 추가
   }
 
-  const handleChipClick = chip =>     setSentence(prevSentence => (prevSentence ? `${prevSentence}, ${chip}` : chip))
+  const handleChipClick = chip => setSentence(prevSentence => (prevSentence ? `${prevSentence}, ${chip}` : chip))
 
   const handleMakeClick = async () => {
     if (!sentence.trim()) {
@@ -181,72 +176,73 @@ function Graph() {
   }, [graph, loadingNode])
 
   return (
-    <div style={{display: 'flex', height: '100vh', overflow: 'hidden'}}>
-      {sidebarOpen && (
-        <div style={{width: '500px', background: '#f0f0f0', padding: '20px', position: 'fixed', left: 0, top: 0, bottom: 0, overflowY: 'auto'}}>
-          <button onClick={toggleSidebar} style={{padding: '0px', fontSize: '16px', marginBottom: '10px', marginLeft: '35px'}}>
-            Close
-          </button>
-          {history.map((entry, index) => (
-            <div key={index} style={{padding: '10px', margin: '5px'}}>
-              <div style={{display: 'flex', flexWrap: 'wrap', marginBottom: '10px'}}>
-                {entry.chips.map((chip, chipIndex) => (
-                  <div key={chipIndex} style={{padding: '5px 10px', margin: '5px', background: '#d9d9d9', borderRadius: '16px'}}>
-                    {chip}
-                  </div>
-                ))}
+<div style={{display: 'flex', height: '100vh', overflow: 'hidden'}}>
+  {sidebarOpen && (
+    <div style={{width: '500px', background: '#f0f0f0', padding: '20px', position: 'absolute', left: 0, top: 0, bottom: 0, overflowY: 'auto', zIndex: 1000}}>
+      <button onClick={toggleSidebar} style={{padding: '0px', fontSize: '16px', marginBottom: '10px', marginLeft: '35px'}}>
+        Close
+      </button>
+      {history.map((entry, index) => (
+        <div key={index} style={{padding: '10px', margin: '5px'}}>
+          <div style={{display: 'flex', flexWrap: 'wrap', marginBottom: '10px'}}>
+            {entry.chips.map((chip, chipIndex) => (
+              <div key={chipIndex} style={{padding: '5px 10px', margin: '5px', background: '#d9d9d9', borderRadius: '16px'}}>
+                {chip}
               </div>
-              <div style={{whiteSpace: 'pre-wrap', wordWrap: 'break-word'}}></div>
-              {entry.answers.map((answer, answerIndex) => (
-                <div key={answerIndex} style={{whiteSpace: 'pre-wrap', wordWrap: 'break-word'}}>
-                  {answer}
-                </div>
-              ))}
+            ))}
+          </div>
+          <div style={{whiteSpace: 'pre-wrap', wordWrap: 'break-word'}}></div>
+          {entry.answers.map((answer, answerIndex) => (
+            <div key={answerIndex} style={{whiteSpace: 'pre-wrap', wordWrap: 'break-word'}}>
+              {answer}
             </div>
           ))}
         </div>
-      )}
+      ))}
+    </div>
+  )}
 
-      <div style={{flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', marginLeft: sidebarOpen ? '500px' : '0', height: '100vh', overflow: 'hidden'}}>
-        <div style={{display: 'flex', justifyContent: 'space-between', width: '100%', padding: '10px 20px', boxSizing: 'border-box', alignItems: 'center'}}>
-          <button onClick={toggleSidebar} style={{padding: '10px', fontSize: '16px'}}>
-            {sidebarOpen ? 'Close' : 'History'}
-          </button>
-          <button onClick={handleHomeClick} style={{padding: '10px', fontSize: '16px', marginRight: sidebarOpen ? '250px' : '0'}}>
-            Home
-          </button>
+  <div style={{flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100vh', overflow: 'hidden'}}>
+    <div style={{display: 'flex', justifyContent: 'space-between', width: '100%', padding: '10px 20px', boxSizing: 'border-box', alignItems: 'center'}}>
+      <button onClick={toggleSidebar} style={{padding: '10px', fontSize: '16px'}}>
+        {sidebarOpen ? 'Close' : 'History'}
+      </button>
+      <button onClick={() => router.push('/')} style={{padding: '10px', fontSize: '16px'}}>
+        Home
+      </button>
+    </div>
+
+    <svg ref={svgRef} width="1820" height="700" style={{flex: '1'}}></svg>
+    <div className="flex w-full flex-col items-center justify-center" style={{marginTop: '0px', marginBottom: '0px'}}>
+      <div className="flex w-full flex-col items-center justify-center" style={{marginTop: '0px', marginBottom: '0px'}}>
+        <div style={{width: '100%', padding: '10px', display: 'flex', flexWrap: 'wrap', justifyContent: 'center'}}>
+          {chips.map((chip, index) => (
+            <div key={index} style={{padding: '5px 10px', margin: '5px', background: '#d9d9d9', borderRadius: '16px', cursor: 'pointer'}} onClick={() => handleChipClick(chip)}>
+              {chip}
+            </div>
+          ))}
         </div>
 
-        <svg ref={svgRef} width="1820" height="700" style={{flex: '1'}}></svg>
-        <div className="flex w-full flex-col items-center justify-center" style={{marginTop: '0px', marginBottom: '0px'}}>
-          <div className="flex w-full flex-col items-center justify-center" style={{marginTop: '0px', marginBottom: '0px'}}>
-            <div style={{width: '100%', padding: '10px', display: 'flex', flexWrap: 'wrap', justifyContent: 'center'}}>
-              {chips.map((chip, index) => (
-                <div key={index} style={{padding: '5px 10px', margin: '5px', background: '#d9d9d9', borderRadius: '16px', cursor: 'pointer'}} onClick={() => handleChipClick(chip)}>
-                  {chip}
-                </div>
-              ))}
-            </div>
-
-            <div className="flex items-center" style={{width: '100%', justifyContent: 'center', marginBottom: '30px'}}>
-              <input
-                type="text"
-                placeholder="MAKE A SENTENCE USING THE CHOSEN WORD"
-                value={sentence}
-                onChange={e => setSentence(e.target.value)}
-                style={{width: '500px', height: '40px', padding: '0 10px', fontSize: '16px', boxSizing: 'border-box'}}
-              />
-              <button
-                className="ml-4 rounded-md bg-gray-400 text-lg"
-                style={{height: '40px', padding: '0 20px', fontSize: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center'}}
-                onClick={handleMakeClick}>
-                MAKE
-              </button>
-            </div>
-          </div>
+        <div className="flex items-center" style={{width: '100%', justifyContent: 'center', marginBottom: '30px'}}>
+          <input
+            type="text"
+            placeholder="MAKE A SENTENCE USING THE CHOSEN WORD"
+            value={sentence}
+            onChange={e => setSentence(e.target.value)}
+            style={{width: '500px', height: '40px', padding: '0 10px', fontSize: '16px', boxSizing: 'border-box'}}
+          />
+          <button
+            className="ml-4 rounded-md bg-gray-400 text-lg"
+            style={{height: '40px', padding: '0 20px', fontSize: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center'}}
+            onClick={handleMakeClick}>
+            MAKE
+          </button>
         </div>
       </div>
     </div>
+  </div>
+</div>
+
   )
 }
 
