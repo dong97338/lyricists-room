@@ -24,9 +24,11 @@ export default () => {
         className="h-14 w-5/6 rounded-lg border p-4 text-sm md:w-[450px] md:text-lg"
       />
       <select value={mood} onChange={e => setMood(e.target.value)} className="h-14 w-5/6 rounded-lg border p-4 text-base md:w-[450px] md:text-lg">
-        <option>가사 분위기를 선택해주세요!</option>
+        <option aria-label="Select">가사 분위기를 선택해주세요!</option>
         {['그리움', '당당함', '불안함', '설렘', '슬픔', '신남', '외로움', '우울함', '평화로움', '화남', '희망찬'].map(mood => (
-          <option key={mood}>{mood}</option>
+          <option aria-label={mood} key={mood}>
+            {mood}
+          </option>
         ))}
       </select>
       <button className="w-[200px] rounded-md bg-gray-400 p-2.5 text-center text-xl" onClick={() => `graph?${new URLSearchParams({topic, key, mood}).toString()}`}>
