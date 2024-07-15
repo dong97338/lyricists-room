@@ -6,9 +6,9 @@ import SEO from '../next-seo.config'
 
 export default ({children}) => (
   <html lang="en">
-    <head>
+    {/* <head>
       <DefaultSeo {...SEO} />
-    </head>
+    </head> */}
     <body className="flex min-h-screen flex-col items-center justify-center space-y-4 bg-gray-100">
       {children}
       <Analytics />
