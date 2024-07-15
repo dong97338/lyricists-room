@@ -58,25 +58,23 @@ function Graph() {
     if (!sentence.trim()) {
       return // 입력창에 아무것도 적혀있지 않으면 함수 종료
     }
-  
+
     const mood = searchParams.get('mood')
     const json = await (await fetch(`${mood}make.json`)).json() // 분위기 json 가져오기
     json.messages.push({role: 'user', content: sentence})
-  
+
     const fetchResponse = async () => {
       const response = await openai.chat.completions.create(json)
       return response
     }
-    const timeout = new Promise((_, reject) => 
-      setTimeout(() => reject(new Error('Timeout')), 5000)
-    )
+    const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 5000))
     try {
       const response = await Promise.race([fetchResponse(), timeout])
       const answers = response.choices[0].message.content.split('\n') // 문장을 개별 문장으로 분리
-  
+
       setHistory(prevHistory => [...prevHistory, {chips: sentence.split(',').map(word => word.trim()), answers}])
       setSentence('')
-      alert(`Response: ${response.choices[0].message.content}`)
+      // alert(`Response: ${response.choices[0].message.content}`)
     } catch (error) {
       if (error.message === 'Timeout') {
         alert('다시 시도해 주세요:)')
@@ -203,7 +201,7 @@ function Graph() {
   return (
     <div className="flex h-screen overflow-hidden">
       {sidebarOpen && (
-        <div className="absolute bottom-0 left-0 top-0 z-50 w-[500px] overflow-y-auto bg-gray-200 p-5">
+        <div className="absolute bottom-0 left-0 top-0 z-30 w-[500px] overflow-y-auto bg-gray-200 p-5">
           <button onClick={toggleSidebar} className="mb-2.5 ml-2.5 p-1 text-lg">
             Close
           </button>
@@ -231,33 +229,31 @@ function Graph() {
         <button onClick={toggleSidebar} className="fixed left-2.5 top-0 p-6 text-lg">
           {sidebarOpen ? 'Close' : 'Maker Mode'}
         </button>
-        <button onClick={() => router.push('/')} className={`fixed right-2.5 top-0 p-6 text-lg `}>
+        <button onClick={() => router.push('/')} className={`fixed right-2.5 top-0 p-6 text-lg`}>
           Home
         </button>
 
         <svg ref={svgRef} width="1820" height="100%" className="flex-1"></svg>
         <div className="mb-0 mt-0 flex w-full flex-col items-center justify-center">
-          <div className="mb-0 mt-0 flex w-full flex-col items-center justify-center">
-            <div className="flex w-full flex-wrap justify-center p-2.5">
-              {chips.map((chip, index) => (
-                <div key={index} className="m-1.5 cursor-pointer rounded-full bg-gray-300 p-2.5" onClick={() => handleChipClick(chip)}>
-                  {chip}
-                </div>
-              ))}
-            </div>
+          <div className="flex w-full flex-wrap justify-center p-2.5">
+            {chips.map((chip, index) => (
+              <div key={index} className="m-1.5 cursor-pointer rounded-full bg-gray-300 p-2.5" onClick={() => handleChipClick(chip)}>
+                {chip}
+              </div>
+            ))}
+          </div>
 
-            <div className="mb-8 flex w-full items-center justify-center">
-              <input
-                type="text"
-                placeholder="MAKE A SENTENCE USING THE CHOSEN WORD"
-                value={sentence}
-                onChange={e => setSentence(e.target.value)}
-                className="box-border h-10 w-[500px] p-2.5 text-base"
-              />
-              <button className="ml-4 flex h-10 items-center justify-center rounded-md bg-gray-400 px-5 text-base" onClick={handleMakeClick}>
-                MAKE
-              </button>
-            </div>
+          <div className="z-50 mb-8 flex w-full items-center justify-center">
+            <input
+              type="text"
+              placeholder="MAKE A SENTENCE USING THE CHOSEN WORD"
+              value={sentence}
+              onChange={e => setSentence(e.target.value)}
+              className="box-border h-10 w-[500px] p-2.5 text-base"
+            />
+            <button className="ml-4 flex h-10 items-center justify-center rounded-md bg-gray-400 px-5 text-base" onClick={handleMakeClick}>
+              MAKE
+            </button>
           </div>
         </div>
       </div>
