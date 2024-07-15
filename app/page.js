@@ -19,7 +19,7 @@ export default () => {
           <option key={mood}>{mood}</option>
         ))}
       </select>
-      <button className="w-[200px] rounded-md bg-gray-400 p-2.5 text-center text-xl" onClick={() => `graph?${new URLSearchParams({topic, key, mood}).toString()}`}>
+      <button className="w-[200px] rounded-md bg-gray-400 p-2.5 text-center text-xl" onClick={() => router.push(`/graph?${new URLSearchParams({topic, key, mood}).toString()}`)}>
         start
       </button>
     </>
