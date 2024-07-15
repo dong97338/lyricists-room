@@ -186,7 +186,7 @@ function Graph() {
   return (
     <div className="flex h-screen overflow-hidden">
       {sidebarOpen && (
-        <div className="absolute bottom-0 left-0 top-0 z-50 w-[500px] overflow-y-auto bg-gray-200 p-5">
+        <div className="absolute bottom-0 left-0 top-0 z-20 w-[500px] overflow-y-auto bg-gray-200 p-5">
           <button onClick={toggleSidebar} className="mb-2.5 ml-2.5 p-1 text-lg">
             Close
           </button>
@@ -225,7 +225,7 @@ function Graph() {
               </div>
             ))}
           </div>
-          <div className="mb-8 flex w-full items-center justify-center">
+          <div className="mb-8 flex w-full items-center justify-center z-50">
             <input className="h-10 w-[500px] text-base" placeholder="MAKE A SENTENCE USING THE CHOSEN WORD" value={sentence} onChange={e => setSentence(e.target.value)} />
             <button className="ml-4 flex h-10 items-center justify-center rounded-md bg-gray-400 px-5 text-base" onClick={handleMakeClick}>
               MAKE
