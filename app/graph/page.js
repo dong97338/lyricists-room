@@ -74,7 +74,7 @@ function Graph() {
 
       setHistory(prevHistory => [...prevHistory, {chips: sentence.split(',').map(word => word.trim()), answers}])
       setSentence('')
-      alert(`Response: ${response.choices[0].message.content}`)
+      // alert(`Response: ${response.choices[0].message.content}`)
     } catch (error) {
       if (error.message === 'Timeout') {
         alert('응답 시간이 초과되었습니다.')
