@@ -18,7 +18,7 @@ function Graph() {
   const sidebarOpenRef = useRef(sidebarOpen) // 사이드바 상태를 참조할 ref
   const svgRef = useRef(null)
   const openai = new OpenAI({apiKey: process.env.NEXT_PUBLIC_OPENAI_KEY, dangerouslyAllowBrowser: true})
-
+  
   useEffect(() => {
     document.body.style.overflow = 'hidden'
     return () => {
@@ -77,7 +77,7 @@ function Graph() {
       // alert(`Response: ${response.choices[0].message.content}`)
     } catch (error) {
       if (error.message === 'Timeout') {
-        alert('응답 시간이 초과되었습니다.')
+        alert('다시 시도해 주세요:)')
       } else {
         alert('오류가 발생했습니다: ' + error.message)
       }
@@ -201,7 +201,7 @@ function Graph() {
   return (
     <div className="flex h-screen overflow-hidden">
       {sidebarOpen && (
-        <div className="absolute bottom-0 left-0 top-0 z-30 w-[500px] overflow-y-auto bg-gray-200 p-5">
+        <div className="absolute bottom-0 left-0 top-0 z-30 lg:w-[500px] w-1/2 overflow-y-auto bg-gray-200 p-5">
           <button onClick={toggleSidebar} className="mb-2.5 ml-2.5 p-1 text-lg">
             Close
           </button>
@@ -233,7 +233,7 @@ function Graph() {
           Home
         </button>
 
-        <svg ref={svgRef} width="1820" height="100%" className="flex-1"></svg>
+        <svg ref={svgRef} className="w-full lg:w-[1820px] h-full flex-1"></svg>
         <div className="mb-0 mt-0 flex w-full flex-col items-center justify-center">
           <div className="flex w-full flex-wrap justify-center p-2.5">
             {chips.map((chip, index) => (
@@ -243,7 +243,7 @@ function Graph() {
             ))}
           </div>
 
-          <div className="z-50 mb-8 flex w-full items-center justify-center">
+          <div className="z-50 mb-2 lg:mb-8 flex w-1/2 lg:w-full items-center justify-center">
             <input
               type="text"
               placeholder="MAKE A SENTENCE USING THE CHOSEN WORD"
@@ -251,7 +251,7 @@ function Graph() {
               onChange={e => setSentence(e.target.value)}
               className="box-border h-10 w-[500px] p-2.5 text-base"
             />
-            <button className="ml-4 flex h-10 items-center justify-center rounded-md bg-gray-400 px-5 text-base" onClick={handleMakeClick}>
+            <button className="ml-4 flex h-10 items-center justify-center rounded-lg bg-gray-400 px-5 text-base" onClick={handleMakeClick}>
               MAKE
             </button>
           </div>

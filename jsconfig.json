@@ -3,6 +3,5 @@
     "paths": {
       "@/*": ["./*"]
     },
-    "types": ["@types/gtag.js"],
   }
 }
