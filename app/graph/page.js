@@ -216,7 +216,7 @@ function Graph() {
               </div>
               <div className="whitespace-pre-wrap break-words"></div>
               {entry.answers.map((answer, answerIndex) => (
-                <div key={answerIndex} className="whitespace-pre-wrap break-words">
+                <div key={answerIndex} className="whitespace-pre-wrap break-words text-sm md:text-base">
                   {answer}
                 </div>
               ))}
@@ -249,9 +249,9 @@ function Graph() {
               placeholder="MAKE A SENTENCE USING THE CHOSEN WORD"
               value={sentence}
               onChange={e => setSentence(e.target.value)}
-              className="box-border h-10 w-1/4 lg:w-full p-2.5 text-base"
+              className="box-border h-10 w-3/4 md:w-full p-2.5 md:text-base text-xs"
             />
-            <button className="ml-4 flex h-10 items-center justify-center rounded-lg bg-gray-400 px-5 text-base" onClick={handleMakeClick}>
+            <button className="ml-4 flex h-10 items-center justify-center rounded-lg bg-gray-400 px-5 md:text-base text-sm" onClick={handleMakeClick}>
               MAKE
             </button>
           </div>
