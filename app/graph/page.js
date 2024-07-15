@@ -79,7 +79,7 @@ function Graph() {
       alert(`Response: ${response.choices[0].message.content}`)
     } catch (error) {
       if (error.message === 'Timeout') {
-        alert('응답 시간이 초과되었습니다.')
+        alert('다시 시도해 주세요:)')
       } else {
         alert('오류가 발생했습니다: ' + error.message)
       }
