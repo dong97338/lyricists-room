@@ -233,7 +233,7 @@ function Graph() {
           Home
         </button>
 
-        <svg ref={svgRef} className="w-full lg:w-[1820px] h-full flex-1"></svg>
+        <svg ref={svgRef} className="w-[1820px] h-full flex-1"></svg>
         <div className="mb-0 mt-0 flex w-full flex-col items-center justify-center">
           <div className="flex w-full flex-wrap justify-center p-2.5">
             {chips.map((chip, index) => (
@@ -243,13 +243,13 @@ function Graph() {
             ))}
           </div>
 
-          <div className="z-50 mb-2 lg:mb-8 flex w-1/2 lg:w-full items-center justify-center">
+          <div className="z-50 mb-2 lg:mb-8 flex w-screen lg:w-[600px] items-center justify-center">
             <input
               type="text"
               placeholder="MAKE A SENTENCE USING THE CHOSEN WORD"
               value={sentence}
               onChange={e => setSentence(e.target.value)}
-              className="box-border h-10 w-[500px] p-2.5 text-base"
+              className="box-border h-10 w-full p-2.5 text-base"
             />
             <button className="ml-4 flex h-10 items-center justify-center rounded-lg bg-gray-400 px-5 text-base" onClick={handleMakeClick}>
               MAKE
