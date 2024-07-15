@@ -5,7 +5,7 @@ export default {
   canonical: 'https://www.lyricistsroom.com/',
   openGraph: {
     type: 'website',
-    locale: 'en_US',
+    locale: 'ko_KR',
     url: 'https://www.lyricistsroom.com/',
     images: [
       {
