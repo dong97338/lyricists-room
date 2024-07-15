@@ -235,27 +235,25 @@ function Graph() {
 
         <svg ref={svgRef} width="1820" height="100%" className="flex-1"></svg>
         <div className="mb-0 mt-0 flex w-full flex-col items-center justify-center">
-          <div className="mb-0 mt-0 flex w-full flex-col items-center justify-center">
-            <div className="flex w-full flex-wrap justify-center p-2.5">
-              {chips.map((chip, index) => (
-                <div key={index} className="m-1.5 cursor-pointer rounded-full bg-gray-300 p-2.5" onClick={() => handleChipClick(chip)}>
-                  {chip}
-                </div>
-              ))}
-            </div>
+          <div className="flex w-full flex-wrap justify-center p-2.5">
+            {chips.map((chip, index) => (
+              <div key={index} className="m-1.5 cursor-pointer rounded-full bg-gray-300 p-2.5" onClick={() => handleChipClick(chip)}>
+                {chip}
+              </div>
+            ))}
+          </div>
 
-            <div className="z-50 mb-8 flex w-full items-center justify-center">
-              <input
-                type="text"
-                placeholder="MAKE A SENTENCE USING THE CHOSEN WORD"
-                value={sentence}
-                onChange={e => setSentence(e.target.value)}
-                className="box-border h-10 w-[500px] p-2.5 text-base"
-              />
-              <button className="ml-4 flex h-10 items-center justify-center rounded-md bg-gray-400 px-5 text-base" onClick={handleMakeClick}>
-                MAKE
-              </button>
-            </div>
+          <div className="z-50 mb-8 flex w-full items-center justify-center">
+            <input
+              type="text"
+              placeholder="MAKE A SENTENCE USING THE CHOSEN WORD"
+              value={sentence}
+              onChange={e => setSentence(e.target.value)}
+              className="box-border h-10 w-[500px] p-2.5 text-base"
+            />
+            <button className="ml-4 flex h-10 items-center justify-center rounded-md bg-gray-400 px-5 text-base" onClick={handleMakeClick}>
+              MAKE
+            </button>
           </div>
         </div>
       </div>
