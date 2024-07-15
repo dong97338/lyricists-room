@@ -4,5 +4,5 @@
 
 input,
 select {
-  @apply w-[450px] rounded-md border p-3 text-lg;
+  @apply h-14 w-5/6 rounded-lg border p-4 text-sm md:w-[450px] md:text-lg;
 }

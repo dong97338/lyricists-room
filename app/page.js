@@ -11,19 +11,9 @@ export default () => {
   return (
     <>
       <h1 className="mb-4 text-3xl font-bold md:text-5xl">Lyricist's Room</h1>
-      <input
-        placeholder="키워드를 입력해주세요.. 한 단어일수록 좋아요!"
-        value={topic}
-        onChange={e => setTopic(e.target.value)}
-        className="h-14 w-5/6 rounded-lg border p-4 text-sm md:w-[450px] md:text-lg"
-      />
-      <input
-        placeholder="키메시지를 입력해주세요!"
-        value={key}
-        onChange={e => setKey(e.target.value)}
-        className="h-14 w-5/6 rounded-lg border p-4 text-sm md:w-[450px] md:text-lg"
-      />
-      <select value={mood} onChange={e => setMood(e.target.value)} className="h-14 w-5/6 rounded-lg border p-4 text-base md:w-[450px] md:text-lg">
+      <input placeholder="키워드를 입력해주세요.. 한 단어일수록 좋아요!" value={topic} onChange={e => setTopic(e.target.value)} />
+      <input placeholder="키메시지를 입력해주세요!" value={key} onChange={e => setKey(e.target.value)} />
+      <select value={mood} onChange={e => setMood(e.target.value)}>
         <option aria-label="Select">가사 분위기를 선택해주세요!</option>
         {['그리움', '당당함', '불안함', '설렘', '슬픔', '신남', '외로움', '우울함', '평화로움', '화남', '희망찬'].map(mood => (
           <option aria-label={mood} key={mood}>
