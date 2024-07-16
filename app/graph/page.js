@@ -1,6 +1,7 @@
 'use client'
 import {useEffect, useState, useRef, Suspense} from 'react'
 import {useSearchParams, useRouter} from 'next/navigation'
+import Link from 'next/link'
 import * as d3 from 'd3'
 import OpenAI from 'openai'
 import dotenv from 'dotenv'
@@ -15,10 +16,13 @@ function Graph() {
   const [chips, setChips] = useState([]) // 클릭한 단어들을 저장할 상태 변수
   const [history, setHistory] = useState([]) // 응답을 저장할 상태 변수
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [showSurvey, setShowSurvey] = useState(false) // 설문조사 팝업 상태 관리
+  const [isFirstMakeClick, setIsFirstMakeClick] = useState(true) // 첫 클릭 여부 상태 관리
+  const [isLoading, setIsLoading] = useState(false);
   const sidebarOpenRef = useRef(sidebarOpen) // 사이드바 상태를 참조할 ref
   const svgRef = useRef(null)
   const openai = new OpenAI({apiKey: process.env.NEXT_PUBLIC_OPENAI_KEY, dangerouslyAllowBrowser: true})
-  
+
   useEffect(() => {
     document.body.style.overflow = 'hidden'
     return () => {
@@ -56,33 +60,46 @@ function Graph() {
 
   const handleMakeClick = async () => {
     if (!sentence.trim()) {
-      return // 입력창에 아무것도 적혀있지 않으면 함수 종료
+      return; // 입력창에 아무것도 적혀있지 않으면 함수 종료
     }
 
-    const mood = searchParams.get('mood')
-    const json = await (await fetch(`${mood}make.json`)).json() // 분위기 json 가져오기
-    json.messages.push({role: 'user', content: sentence})
+    if (isFirstMakeClick) {
+      setTimeout(() => {
+        setShowSurvey(true); // 첫 클릭 시 설문조사 팝업 표시
+      }, 3000); // 3초 후에 팝업 표시
+      setIsFirstMakeClick(false); // 첫 클릭 상태 업데이트
+    }
+
+    const mood = searchParams.get('mood');
+    const json = await (await fetch(`${mood}make.json`)).json(); // 분위기 json 가져오기
+    json.messages.push({ role: 'user', content: sentence });
 
     const fetchResponse = async () => {
-      const response = await openai.chat.completions.create(json)
-      return response
-    }
-    const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 5000))
-    try {
-      const response = await Promise.race([fetchResponse(), timeout])
-      const answers = response.choices[0].message.content.split('\n') // 문장을 개별 문장으로 분리
+      const response = await openai.chat.completions.create(json);
+      return response;
+    };
 
-      setHistory(prevHistory => [...prevHistory, {chips: sentence.split(',').map(word => word.trim()), answers}])
-      setSentence('')
-      // alert(`Response: ${response.choices[0].message.content}`)
+    const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 5000));
+    try {
+      setIsLoading(true); // 로딩 시작
+      const response = await Promise.race([fetchResponse(), timeout]);
+      const answers = response.choices[0].message.content.split('\n'); // 문장을 개별 문장으로 분리
+
+      setHistory((prevHistory) => [
+        ...prevHistory,
+        { chips: sentence.split(',').map((word) => word.trim()), answers },
+      ]);
+      setSentence('');
     } catch (error) {
       if (error.message === 'Timeout') {
-        alert('다시 시도해 주세요:)')
+        alert('다시 시도해 주세요:)');
       } else {
-        alert('오류가 발생했습니다: ' + error.message)
+        alert('오류가 발생했습니다: ' + error.message);
       }
+    } finally {
+      setIsLoading(false); // 로딩 종료
     }
-  }
+  };
 
   useEffect(() => {
     const svg = d3.select(svgRef.current)
@@ -222,6 +239,7 @@ function Graph() {
               ))}
             </div>
           ))}
+          {isLoading && <img className="mx-auto size-20" src="loading.svg" />}
         </div>
       )}
   
@@ -242,20 +260,35 @@ function Graph() {
               </div>
             ))}
           </div>
-  
+
           <div className="z-50 mb-8 flex w-screen md:w-[600px] items-center justify-center">
             <input
               type="text"
               placeholder="MAKE A SENTENCE USING THE CHOSEN WORD"
               value={sentence}
               onChange={e => setSentence(e.target.value)}
-              className="box-border h-10 w-3/4 md:w-full p-2.5 md:text-base text-xs"
+              className="box-border h-10 w-3/4 p-2.5 text-xs md:w-full md:text-base"
             />
             <button className="ml-1 md:ml-4 flex h-10 items-center justify-center rounded-lg bg-gray-400 px-5 md:text-base text-xs" onClick={handleMakeClick}>
               MAKE
             </button>
           </div>
         </div>
+        {showSurvey && (
+          <div className="fixed bottom-0 right-0 z-50 m-4 w-96 rounded-lg bg-white p-4 shadow-lg">
+            <h2 className="mb-2 text-lg font-bold">Survey</h2>
+            <p className="mb-4">
+              데모버전 구글폼 피드백에 참여해주시면, 추첨을 통해 스타벅스 10,000원권 기프티콘을 드리고 있으니 많은 관심 부탁드려요.
+              <br /><br />
+              <Link className="text-sky-500" href="https://forms.gle/WMtrJzuCT5dkt4267">
+                [Lyricist's Room 피드백 구글폼]
+              </Link>
+            </p>
+            <button onClick={() => setShowSurvey(false)} className="rounded-md bg-blue-500 px-4 py-2 text-white">
+              Close
+            </button>
+          </div>
+        )}
       </div>
     </div>
   )

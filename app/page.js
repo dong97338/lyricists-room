@@ -7,6 +7,7 @@ export default () => {
   const [topic, setTopic] = useState('')
   const [key, setKey] = useState('')
   const [mood, setMood] = useState('')
+  const [showGuide, setShowGuide] = useState(false)
 
   return (
     <>
@@ -19,9 +20,28 @@ export default () => {
           <option key={mood}>{mood}</option>
         ))}
       </select>
-      <button className="w-[200px] rounded-md bg-gray-400 p-2.5 text-center text-xl" onClick={() => router.push(`/graph?${new URLSearchParams({topic, key, mood}).toString()}`)}>
-        start
-      </button>
+      <div className="flex items-center justify-center space-x-4">
+        <button className="w-[200px] rounded-md bg-gray-400 p-2.5 text-center text-xl" onClick={() => router.push(`/graph?${new URLSearchParams({topic, key, mood}).toString()}`)}>
+          start
+        </button>
+        <button className="w-[200px] rounded-md bg-blue-400 p-2.5 text-center text-xl" onClick={() => setShowGuide(true)}>
+          사용자가이드
+        </button>
+      </div>
+
+      {showGuide && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="relative w-[800px] rounded-md bg-white p-4">
+            <button className="absolute right-2 top-2 text-xl" onClick={() => setShowGuide(false)}>
+              &times;
+            </button>
+            <img src="how-to.png" alt="사용자 가이드" className="w-full" />
+          </div>
+        </div>
+      )}
+      <a href="https://github.com/dong97338/lyricists-room" target="_blank" rel="noopener noreferrer" className="fixed bottom-4 left-4 hover:opacity-75">
+        <img src="github-mark.svg" alt="깃허브" className="w-10" />
+      </a>
     </>
   )
 }
