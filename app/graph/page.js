@@ -233,7 +233,7 @@ function Graph() {
           Home
         </button>
 
-        <svg ref={svgRef} className="w-[1820px] h-full flex-1"></svg>
+        <svg ref={svgRef} className="w-full md:w-[1820px] h-full flex-1"></svg>
         <div className="mb-0 mt-0 flex w-full flex-col items-center justify-center">
           <div className="flex w-full flex-wrap justify-center p-2.5">
             {chips.map((chip, index) => (
@@ -251,7 +251,7 @@ function Graph() {
               onChange={e => setSentence(e.target.value)}
               className="box-border h-10 w-3/4 md:w-full p-2.5 md:text-base text-xs"
             />
-            <button className="ml-4 flex h-10 items-center justify-center rounded-lg bg-gray-400 px-5 md:text-base text-sm" onClick={handleMakeClick}>
+            <button className="ml-1 md:ml-4 flex h-10 items-center justify-center rounded-lg bg-gray-400 px-5 md:text-base text-xs" onClick={handleMakeClick}>
               MAKE
             </button>
           </div>
