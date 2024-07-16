@@ -202,7 +202,7 @@ function Graph() {
     <div className="flex h-screen overflow-hidden">
       {sidebarOpen && (
         <div className="absolute bottom-0 left-0 top-0 z-30 md:w-[500px] w-2/3 overflow-y-auto bg-gray-200 p-5">
-          <button onClick={toggleSidebar} className="mb-2.5 ml-2.5 p-1 text-lg">
+          <button onClick={toggleSidebar} className="mb-2.5 ml-2.5 p-1 md:text-lg text-sm">
             Close
           </button>
           {history.map((entry, index) => (
@@ -216,7 +216,7 @@ function Graph() {
               </div>
               <div className="whitespace-pre-wrap break-words"></div>
               {entry.answers.map((answer, answerIndex) => (
-                <div key={answerIndex} className="whitespace-pre-wrap break-words text-sm md:text-base">
+                <div key={answerIndex} className="whitespace-pre-wrap break-words text-xs md:text-base">
                   {answer}
                 </div>
               ))}
@@ -233,7 +233,7 @@ function Graph() {
           Home
         </button>
 
-        <svg ref={svgRef} className="w-full md:w-[1820px] h-full flex-1"></svg>
+        <svg ref={svgRef} className="w-full lg:w-[1820px] h-full flex-1"></svg>
         <div className="mb-0 mt-0 flex w-full flex-col items-center justify-center">
           <div className="flex w-full flex-wrap justify-center p-2.5">
             {chips.map((chip, index) => (
