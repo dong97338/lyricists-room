@@ -18,6 +18,7 @@ function Graph() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [showSurvey, setShowSurvey] = useState(false) // 설문조사 팝업 상태 관리
   const [isFirstMakeClick, setIsFirstMakeClick] = useState(true) // 첫 클릭 여부 상태 관리
+  const [isLoading, setIsLoading] = useState(false);
   const sidebarOpenRef = useRef(sidebarOpen) // 사이드바 상태를 참조할 ref
   const svgRef = useRef(null)
   const openai = new OpenAI({apiKey: process.env.NEXT_PUBLIC_OPENAI_KEY, dangerouslyAllowBrowser: true})
@@ -59,40 +60,46 @@ function Graph() {
 
   const handleMakeClick = async () => {
     if (!sentence.trim()) {
-      return // 입력창에 아무것도 적혀있지 않으면 함수 종료
+      return; // 입력창에 아무것도 적혀있지 않으면 함수 종료
     }
 
     if (isFirstMakeClick) {
       setTimeout(() => {
-        setShowSurvey(true) // 첫 클릭 시 설문조사 팝업 표시
-      }, 3000) // 3초 후에 팝업 표시
-      setIsFirstMakeClick(false) // 첫 클릭 상태 업데이트
+        setShowSurvey(true); // 첫 클릭 시 설문조사 팝업 표시
+      }, 3000); // 3초 후에 팝업 표시
+      setIsFirstMakeClick(false); // 첫 클릭 상태 업데이트
     }
 
-    const mood = searchParams.get('mood')
-    const json = await (await fetch(`${mood}make.json`)).json() // 분위기 json 가져오기
-    json.messages.push({role: 'user', content: sentence})
+    const mood = searchParams.get('mood');
+    const json = await (await fetch(`${mood}make.json`)).json(); // 분위기 json 가져오기
+    json.messages.push({ role: 'user', content: sentence });
 
     const fetchResponse = async () => {
-      const response = await openai.chat.completions.create(json)
-      return response
-    }
-    const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 5000))
-    try {
-      const response = await Promise.race([fetchResponse(), timeout])
-      const answers = response.choices[0].message.content.split('\n') // 문장을 개별 문장으로 분리
+      const response = await openai.chat.completions.create(json);
+      return response;
+    };
 
-      setHistory(prevHistory => [...prevHistory, {chips: sentence.split(',').map(word => word.trim()), answers}])
-      setSentence('')
-      // alert(`Response: ${response.choices[0].message.content}`)
+    const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 5000));
+    try {
+      setIsLoading(true); // 로딩 시작
+      const response = await Promise.race([fetchResponse(), timeout]);
+      const answers = response.choices[0].message.content.split('\n'); // 문장을 개별 문장으로 분리
+
+      setHistory((prevHistory) => [
+        ...prevHistory,
+        { chips: sentence.split(',').map((word) => word.trim()), answers },
+      ]);
+      setSentence('');
     } catch (error) {
       if (error.message === 'Timeout') {
-        alert('다시 시도해 주세요:)')
+        alert('다시 시도해 주세요:)');
       } else {
-        alert('오류가 발생했습니다: ' + error.message)
+        alert('오류가 발생했습니다: ' + error.message);
       }
+    } finally {
+      setIsLoading(false); // 로딩 종료
     }
-  }
+  };
 
   useEffect(() => {
     const svg = d3.select(svgRef.current)
@@ -232,6 +239,7 @@ function Graph() {
               ))}
             </div>
           ))}
+          {isLoading && <img className="mx-auto size-20" src="loading.svg" />}
         </div>
       )}
 
