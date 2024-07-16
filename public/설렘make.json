@@ -11,7 +11,7 @@
         ]
       }
     ],
-    "temperature": 1.4,
+    "temperature": 1.2,
     "max_tokens": 963,
     "top_p": 1,
     "frequency_penalty": 0,
