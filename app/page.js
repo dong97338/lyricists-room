@@ -39,7 +39,7 @@ export default () => {
           </div>
         </div>
       )}
-      <a href="https://github.com/dong97338/lyricists-room" target="_blank" rel="noopener noreferrer" className="fixed bottom-4 left-4">
+      <a href="https://github.com/dong97338/lyricists-room" target="_blank" rel="noopener noreferrer" className="fixed bottom-4 left-4 hover:opacity-75">
         <img src="github-mark.svg" alt="깃허브" className="w-10" />
       </a>
     </>
