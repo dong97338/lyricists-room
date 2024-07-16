@@ -211,8 +211,8 @@ function Graph() {
   return (
     <div className="flex h-screen overflow-hidden">
       {sidebarOpen && (
-        <div className="absolute bottom-0 left-0 top-0 z-30 w-2/3 overflow-y-auto bg-gray-200 p-5 md:w-[500px]">
-          <button onClick={toggleSidebar} className="mb-2.5 ml-2.5 p-1 text-lg">
+        <div className="absolute bottom-0 left-0 top-0 z-30 md:w-[500px] w-2/3 overflow-y-auto bg-gray-200 p-5">
+          <button onClick={toggleSidebar} className="mb-2.5 ml-2.5 p-1 md:text-lg text-sm">
             Close
           </button>
           {history.map((entry, index) => (
@@ -226,7 +226,7 @@ function Graph() {
               </div>
               <div className="whitespace-pre-wrap break-words"></div>
               {entry.answers.map((answer, answerIndex) => (
-                <div key={answerIndex} className="whitespace-pre-wrap break-words text-sm md:text-base">
+                <div key={answerIndex} className="whitespace-pre-wrap break-words text-xs md:text-base">
                   {answer}
                 </div>
               ))}
@@ -243,7 +243,7 @@ function Graph() {
           Home
         </button>
 
-        <svg ref={svgRef} className="h-full w-[1820px] flex-1"></svg>
+        <svg ref={svgRef} className="w-full lg:w-[1820px] h-full flex-1"></svg>
         <div className="mb-0 mt-0 flex w-full flex-col items-center justify-center">
           <div className="flex w-full flex-wrap justify-center p-2.5">
             {chips.map((chip, index) => (
@@ -261,7 +261,7 @@ function Graph() {
               onChange={e => setSentence(e.target.value)}
               className="box-border h-10 w-3/4 p-2.5 text-xs md:w-full md:text-base"
             />
-            <button className="ml-4 flex h-10 items-center justify-center rounded-lg bg-gray-400 px-5 text-sm md:text-base" onClick={handleMakeClick}>
+            <button className="ml-1 md:ml-4 flex h-10 items-center justify-center rounded-lg bg-gray-400 px-5 md:text-base text-xs" onClick={handleMakeClick}>
               MAKE
             </button>
           </div>
