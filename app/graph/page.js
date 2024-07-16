@@ -280,7 +280,7 @@ function Graph() {
             <p className="mb-4">
               데모버전 구글폼 피드백에 참여해주시면, 추첨을 통해 스타벅스 10,000원권 기프티콘을 드리고 있으니 많은 관심 부탁드려요.
               <br /><br />
-              <Link className="text-sky-500" href="https://forms.gle/WMtrJzuCT5dkt4267">
+              <Link className="text-sky-500" href="https://forms.gle/WMtrJzuCT5dkt4267" target="_blank">
                 [Lyricist's Room 피드백 구글폼]
               </Link>
             </p>
