@@ -224,7 +224,7 @@ function Graph() {
           ))}
         </div>
       )}
-
+  
       <div className={`flex h-screen flex-1 flex-col items-center overflow-hidden`}>
         <button onClick={toggleSidebar} className="fixed left-2.5 top-0 p-6 text-lg">
           {sidebarOpen ? 'Close' : 'Maker Mode'}
@@ -232,7 +232,7 @@ function Graph() {
         <button onClick={() => router.push('/')} className={`fixed right-2.5 top-0 p-6 text-lg`}>
           Home
         </button>
-
+  
         <svg ref={svgRef} className="w-full lg:w-[1820px] h-full flex-1"></svg>
         <div className="mb-0 mt-0 flex w-full flex-col items-center justify-center">
           <div className="flex w-full flex-wrap justify-center p-2.5">
@@ -242,7 +242,7 @@ function Graph() {
               </div>
             ))}
           </div>
-
+  
           <div className="z-50 mb-8 flex w-screen md:w-[600px] items-center justify-center">
             <input
               type="text"
