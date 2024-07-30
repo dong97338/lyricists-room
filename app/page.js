@@ -21,7 +21,7 @@ export default () => {
         ))}
       </select>
       <div className="flex items-center justify-center space-x-4">
-        <button className="w-[200px] rounded-md bg-gray-400 p-2.5 text-center text-xl" onClick={() => router.push(`/graph?${new URLSearchParams({topic, key, mood}).toString()}`)}>
+        <button className="md:w-[200px] rounded-md bg-gray-400 p-2.5 text-center text-xl" onClick={() => router.push(`/graph?${new URLSearchParams({topic, key, mood}).toString()}`)}>
           start
         </button>
         <button className="w-[200px] rounded-md bg-blue-400 p-2.5 text-center text-xl" onClick={() => setShowGuide(true)}>
