@@ -1,0 +1,29 @@
+{
+    "LyricistRoom": {
+      "title": "Lyricist's Room",
+      "topicPlaceholder": "Please enter a keyword.. The shorter the better!",
+      "keyMessagePlaceholder": "Please enter the key message!",
+      "moodPlaceholder": "Please select the mood of the lyrics!",
+      "moods": {
+        "nostalgia": "Nostalgia",
+        "confidence": "Confidence",
+        "anxiety": "Anxiety",
+        "excitement": "Excitement",
+        "sadness": "Sadness",
+        "cheerfulness": "Cheerfulness",
+        "loneliness": "Loneliness",
+        "depression": "Depression",
+        "peacefulness": "Peacefulness",
+        "anger": "Anger",
+        "hopeful": "Hopeful"
+      },
+      "buttons": {
+        "start": "Start",
+        "guide": "User Guide"
+      },
+      "guide": {
+        "close": "Close",
+        "altText": "User Guide"
+      }
+    }
+  }
