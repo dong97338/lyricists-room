@@ -1,16 +1,33 @@
 'use client'
-import {useEffect, useState, useRef, Suspense} from 'react'
-import {useSearchParams, useRouter} from 'next/navigation'
+import { useEffect, useState, useRef, Suspense } from 'react'
+import { useSearchParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import * as d3 from 'd3'
 import OpenAI from 'openai'
 import dotenv from 'dotenv'
+import { initializeApp, getApps } from 'firebase/app';
+import { getFirestore, doc, setDoc } from 'firebase/firestore';
 dotenv.config()
+
+const firebaseConfig = {
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+};
+
+if (!getApps().length) {
+  initializeApp(firebaseConfig);
+}
+
+const db = getFirestore();
 
 function Graph() {
   const searchParams = useSearchParams()
   const router = useRouter()
-  const [graph, setGraph] = useState({nodes: [{id: 1, name: searchParams.get('topic') || 'No topic', fx: 910, fy: 400}], links: []})
+  const [graph, setGraph] = useState({ nodes: [{ id: 1, name: searchParams.get('topic') || 'No topic', fx: 910, fy: 400 }], links: [] })
   const [sentence, setSentence] = useState('')
   const [loadingNode, setLoadingNode] = useState(null)
   const [chips, setChips] = useState([]) // 클릭한 단어들을 저장할 상태 변수
@@ -21,7 +38,12 @@ function Graph() {
   const [isLoading, setIsLoading] = useState(false);
   const sidebarOpenRef = useRef(sidebarOpen) // 사이드바 상태를 참조할 ref
   const svgRef = useRef(null)
-  const openai = new OpenAI({apiKey: process.env.NEXT_PUBLIC_OPENAI_KEY, dangerouslyAllowBrowser: true})
+  const openai = new OpenAI({ apiKey: process.env.NEXT_PUBLIC_OPENAI_KEY, dangerouslyAllowBrowser: true })
+  const key = searchParams.get('key')
+  const mood = searchParams.get('mood')
+
+  // Generate a unique session ID
+  const sessionId = useRef(Date.now().toString(36) + Math.random().toString(36).substr(2, 9)).current;
 
   useEffect(() => {
     document.body.style.overflow = 'hidden'
@@ -46,13 +68,13 @@ function Graph() {
       return
     }
     setLoadingNode(node.id)
-    const content = `""키워드"": ${node.name}\n""키메시지"": ${searchParams.get('key') || ''}\n*[최종 답변 형태] 외 답변 금지\n**[답변 금지 단어]: ${graph.nodes.map(node => node.name).join(', ')}`
-    const json = await (await fetch(`${searchParams.get('mood')}.json`)).json() // 분위기 json 가져오기
-    json.messages.push({role: 'user', content})
+    const content = `""키워드"": ${node.name}\n""키메시지"": ${key || ''}\n*[최종 답변 형태] 외 답변 금지\n**[답변 금지 단어]: ${graph.nodes.map(node => node.name).join(', ')}`
+    const json = await (await fetch(`${mood}.json`)).json() // 분위기 json 가져오기
+    json.messages.push({ role: 'user', content })
     const response = await openai.chat.completions.create(json)
     const [keyword, relatedWords] = response.choices[0].message.content.match(/(?<=1개: ).+|(?<=6개: ).+/g).map(words => words.split(', '))
-    const newNodes = [keyword, ...relatedWords].map((name, i) => ({id: graph.nodes.length + i + 1, name, x: node.x + 50 * Math.cos(i / 2), y: node.y + 50 * Math.sin(i / 2)}))
-    setGraph(prevGraph => ({nodes: [...prevGraph.nodes, ...newNodes], links: [...prevGraph.links, ...newNodes.map(newNode => ({source: node.id, target: newNode.id}))]}))
+    const newNodes = [keyword, ...relatedWords].map((name, i) => ({ id: graph.nodes.length + i + 1, name, x: node.x + 50 * Math.cos(i / 2), y: node.y + 50 * Math.sin(i / 2) }))
+    setGraph(prevGraph => ({ nodes: [...prevGraph.nodes, ...newNodes], links: [...prevGraph.links, ...newNodes.map(newNode => ({ source: node.id, target: newNode.id }))] }))
     setLoadingNode(null)
   }
 
@@ -215,6 +237,43 @@ function Graph() {
     simulation.alpha(1).restart()
   }, [graph, loadingNode])
 
+  const saveSessionData = async (graph, sentence, history) => {
+    // Convert the graph to a simpler structure
+    const nodesObject = {};
+    graph.nodes.forEach((node, index) => {
+      nodesObject[index] = node.name;
+    });
+
+    const simplifiedGraph = {
+      nodes: nodesObject,
+      links: graph.links.map(link => ({
+        source: graph.nodes.findIndex(n => n.id === link.source.id),
+        target: graph.nodes.findIndex(n => n.id === link.target.id)
+      }))
+    };
+
+    try {
+      await setDoc(doc(db, 'sessions', sessionId), {
+        key,
+        mood,
+        graph: simplifiedGraph,
+        sentence,
+        history,
+        timestamp: new Date(),
+      });
+    } catch (e) {
+      console.error('Error adding document: ', e);
+    }
+  };
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      saveSessionData(graph, sentence, history);
+    }, 1000);
+
+    return () => clearInterval(intervalId);
+  }, [graph, sentence, history]);
+
   return (
     <div className="flex h-screen overflow-hidden">
       {sidebarOpen && (
@@ -290,6 +349,10 @@ function Graph() {
           </div>
         )}
       </div>
+      {/* 임시 버튼 추가
+      <button onClick={() => saveSessionData(graph, sentence, history)} className="fixed bottom-10 right-10 p-2 bg-blue-500 text-white rounded">
+        Save Data
+      </button> */}
     </div>
   )
 }
