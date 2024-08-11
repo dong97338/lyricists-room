@@ -274,7 +274,7 @@ function Graph() {
   return (
     <div className="flex h-screen overflow-hidden">
       {sidebarOpen && (
-        <div className="absolute bottom-0 left-0 top-0 z-30 w-2/3 overflow-y-auto bg-gray-200 p-5 opacity-75 md:w-1/2">
+        <div className="absolute bottom-0 left-0 top-0 z-30 w-1/3 overflow-y-auto bg-gray-200 p-5 opacity-75">
           <button onClick={toggleSidebar} className="mb-2.5 ml-2.5 p-1 text-sm md:text-lg">
             Close
           </button>
@@ -347,10 +347,6 @@ function Graph() {
           </div>
         )}
       </div>
-      {/* 임시 버튼 추가
-      <button onClick={() => saveSessionData(graph, sentence, history)} className="fixed bottom-10 right-10 p-2 bg-blue-500 text-white rounded">
-        Save Data
-      </button> */}
     </div>
   )
 }
