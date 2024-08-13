@@ -308,16 +308,8 @@ function Graph() {
         </button>
 
         <svg ref={svgRef} className="h-full w-[1820px] flex-1"></svg>
-        <div className="mb-0 mt-0 flex w-full flex-col items-center justify-center">
-          <div className="flex w-full flex-wrap justify-center p-2.5">
-            {chips.map((chip, index) => (
-              <div key={index} className="m-1.5 cursor-pointer rounded-full bg-gray-300 p-2.5" onClick={() => handleChipClick(chip)}>
-                {chip}
-              </div>
-            ))}
-          </div>
-
-          <div className="z-50 mb-8 flex w-screen items-center justify-center md:w-[600px]">
+        <div className="fixed bottom-0 left-1/2 transform -translate-x-1/2 mb-4">
+          <div className="z-50 flex w-screen items-center justify-center md:w-[600px]">
             <input
               type="text"
               placeholder="MAKE A SENTENCE USING THE CHOSEN WORD"
