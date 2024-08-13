@@ -3,8 +3,8 @@ import {Analytics} from '@vercel/analytics/react'
 import {GoogleAnalytics} from '@next/third-parties/google'
 
 export const metadata = {
-  title: "Lyricist's Room",
-  description: "작사가를 위한 창작 공간, Lyricist's Room입니다!",
+  title: "Room for Creators!",
+  description: "Room for Creators: A Creative Space for Songwriters",
   canonical: 'https://www.lyricistsroom.com/',
   openGraph: {
     type: 'website',
@@ -19,7 +19,7 @@ export const metadata = {
         type: 'image/jpeg'
       }
     ],
-    siteName: "Lyricist's Room"
+    siteName: "Room for Creators!"
   },
   twitter: {
     handle: '@example',
