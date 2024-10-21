@@ -69,7 +69,75 @@ function Graph() {
     }
     setLoadingNode(node.id)
     const content = `""키워드"": ${node.name}\n""키메시지"": ${key || ''}\n*[최종 답변 형태] 외 답변 금지\n**[답변 금지 단어]: ${graph.nodes.map(node => node.name).join(', ')}`
-    const json = await (await fetch(`${mood}.json`)).json() // 분위기 json 가져오기
+    let json
+    switch (searchParams.get('mood')) {
+      case '그리움':
+        json = JSON.parse(process.env.NEXT_PUBLIC_NOSTALGIA)
+        break
+      case '그리움make':
+        json = JSON.parse(process.env.NEXT_PUBLIC_NOSTALGIAMAKE)
+        break
+      case '당당함':
+        json = JSON.parse(process.env.NEXT_PUBLIC_CONFIDENCE)
+        break
+      case '당당함make':
+        json = JSON.parse(process.env.NEXT_PUBLIC_CONFIDENCEMAKE)
+        break
+      case '불안함':
+        json = JSON.parse(process.env.NEXT_PUBLIC_ANXIETY)
+        break
+      case '불안함make':
+        json = JSON.parse(process.env.NEXT_PUBLIC_ANXIETYMAKE)
+        break
+      case '설렘':
+        json = JSON.parse(process.env.NEXT_PUBLIC_EXCITEMENT)
+        break
+      case '설렘make':
+        json = JSON.parse(process.env.NEXT_PUBLIC_EXCITEMENTMAKE)
+        break
+      case '슬픔':
+        json = JSON.parse(process.env.NEXT_PUBLIC_SADNESS)
+        break
+      case '슬픔make':
+        json = JSON.parse(process.env.NEXT_PUBLIC_SADNESSMAKE)
+        break
+      case '신남':
+        json = JSON.parse(process.env.NEXT_PUBLIC_CHEERFULNESS)
+        break
+      case '신남make':
+        json = JSON.parse(process.env.NEXT_PUBLIC_CHEERFULNESSMAKE)
+        break
+      case '외로움':
+        json = JSON.parse(process.env.NEXT_PUBLIC_LONELINESS)
+        break
+      case '외로움make':
+        json = JSON.parse(process.env.NEXT_PUBLIC_LONELINESSMAKE)
+        break
+      case '우울함':
+        json = JSON.parse(process.env.NEXT_PUBLIC_DEPRESSION)
+        break
+      case '우울함make':
+        json = JSON.parse(process.env.NEXT_PUBLIC_DEPRESSIONMAKE)
+        break
+      case '평화로움':
+        json = JSON.parse(process.env.NEXT_PUBLIC_PEACEFULNESS)
+        break
+      case '평화로움make':
+        json = JSON.parse(process.env.NEXT_PUBLIC_PEACEFULNESSMAKE)
+        break
+      case '화남':
+        json = JSON.parse(process.env.NEXT_PUBLIC_ANGER)
+        break
+      case '화남make':
+        json = JSON.parse(process.env.NEXT_PUBLIC_ANGERMAKE)
+        break
+      case '희망찬':
+        json = JSON.parse(process.env.NEXT_PUBLIC_HOPEFULNESS)
+        break
+      case '희망찬make':
+        json = JSON.parse(process.env.NEXT_PUBLIC_HOPEFULNESSMAKE)
+        break
+    }
     json.messages.push({role: 'user', content})
     const response = await openai.chat.completions.create(json)
     const [keyword, relatedWords] = response.choices[0].message.content.match(/(?<=1개: ).+|(?<=6개: ).+/g).map(words => words.split(', '))
@@ -92,8 +160,76 @@ function Graph() {
       setIsFirstMakeClick(false) // 첫 클릭 상태 업데이트
     }
 
-    const mood = searchParams.get('mood')
-    const json = await (await fetch(`${mood}make.json`)).json() // 분위기 json 가져오기
+    let json
+    switch (searchParams.get('mood')+'make') {
+      case '그리움':
+        json = JSON.parse(process.env.NEXT_PUBLIC_NOSTALGIA)
+        break
+      case '그리움make':
+        json = JSON.parse(process.env.NEXT_PUBLIC_NOSTALGIAMAKE)
+        break
+      case '당당함':
+        json = JSON.parse(process.env.NEXT_PUBLIC_CONFIDENCE)
+        break
+      case '당당함make':
+        json = JSON.parse(process.env.NEXT_PUBLIC_CONFIDENCEMAKE)
+        break
+      case '불안함':
+        json = JSON.parse(process.env.NEXT_PUBLIC_ANXIETY)
+        break
+      case '불안함make':
+        json = JSON.parse(process.env.NEXT_PUBLIC_ANXIETYMAKE)
+        break
+      case '설렘':
+        json = JSON.parse(process.env.NEXT_PUBLIC_EXCITEMENT)
+        break
+      case '설렘make':
+        json = JSON.parse(process.env.NEXT_PUBLIC_EXCITEMENTMAKE)
+        break
+      case '슬픔':
+        json = JSON.parse(process.env.NEXT_PUBLIC_SADNESS)
+        break
+      case '슬픔make':
+        json = JSON.parse(process.env.NEXT_PUBLIC_SADNESSMAKE)
+        break
+      case '신남':
+        json = JSON.parse(process.env.NEXT_PUBLIC_CHEERFULNESS)
+        break
+      case '신남make':
+        json = JSON.parse(process.env.NEXT_PUBLIC_CHEERFULNESSMAKE)
+        break
+      case '외로움':
+        json = JSON.parse(process.env.NEXT_PUBLIC_LONELINESS)
+        break
+      case '외로움make':
+        json = JSON.parse(process.env.NEXT_PUBLIC_LONELINESSMAKE)
+        break
+      case '우울함':
+        json = JSON.parse(process.env.NEXT_PUBLIC_DEPRESSION)
+        break
+      case '우울함make':
+        json = JSON.parse(process.env.NEXT_PUBLIC_DEPRESSIONMAKE)
+        break
+      case '평화로움':
+        json = JSON.parse(process.env.NEXT_PUBLIC_PEACEFULNESS)
+        break
+      case '평화로움make':
+        json = JSON.parse(process.env.NEXT_PUBLIC_PEACEFULNESSMAKE)
+        break
+      case '화남':
+        json = JSON.parse(process.env.NEXT_PUBLIC_ANGER)
+        break
+      case '화남make':
+        json = JSON.parse(process.env.NEXT_PUBLIC_ANGERMAKE)
+        break
+      case '희망찬':
+        json = JSON.parse(process.env.NEXT_PUBLIC_HOPEFULNESS)
+        break
+      case '희망찬make':
+        json = JSON.parse(process.env.NEXT_PUBLIC_HOPEFULNESSMAKE)
+        break
+    }
+
     json.messages.push({role: 'user', content: sentence})
 
     const fetchResponse = async () => {
